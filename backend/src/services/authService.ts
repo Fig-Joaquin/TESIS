@@ -5,6 +5,7 @@ import { Usuario } from '../entities/usuarioEntity';
 import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/jwt';
 
 export const login = async (Rut_Persona: string, Password: string) => {
+  Rut_Persona = Rut_Persona.toLowerCase();
   const usuarioRepository = AppDataSource.getRepository(Usuario);
   const usuario = await usuarioRepository.findOne({
     where: { persona: { Rut_Persona } },
