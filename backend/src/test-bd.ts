@@ -1,4 +1,4 @@
-import { AppDataSource } from './src/config/data-source';
+import { AppDataSource } from './config/data-source';
 
 AppDataSource.initialize()
   .then(() => {
