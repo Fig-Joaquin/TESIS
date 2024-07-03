@@ -16,7 +16,7 @@ export const login = async (Rut_Persona: string, Password: string) => {
     throw new Error('Rut no encontrado');
   }
 
-  console.log('Usuario encontrado:', usuario);
+ // console.log('Usuario encontrado:', usuario);
 
   const isPasswordValid = await bcrypt.compare(Password, usuario.Password_Hash);
   if (!isPasswordValid) {
@@ -30,10 +30,10 @@ export const login = async (Rut_Persona: string, Password: string) => {
   }
 
   const tokenPayload = { id: usuario.ID_Usuario, rut: usuario.persona.Rut_Persona, rol: usuario.Rol_Usuario };
-  console.log('Token payload:', tokenPayload);
+ // console.log('Token payload:', tokenPayload);
 
   const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-  console.log('Token generado:', token);
+ // console.log('Token generado:', token);
 
   return { token, usuario };
 };

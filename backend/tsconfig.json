@@ -10,6 +10,8 @@
     "emitDecoratorMetadata": true,
     "skipLibCheck": true,
     "strictPropertyInitialization": false,
+    "resolveJsonModule": true,
+    "lib": ["ES2022"]
   },
   "include": ["src", "test-bd.ts"],
   "exclude": ["node_modules"]
