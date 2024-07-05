@@ -1,12 +1,57 @@
 import { z } from 'zod';
 
+// Función para validar el dígito verificador del RUT
+function validarRut(rutCompleto: string): boolean {
+  if (!/^\d+-[0-9kK]$/.test(rutCompleto)) {
+    return false;
+  }
+
+  const [rut, digitoVerificador] = rutCompleto.split('-');
+  let suma = 0;
+  let multiplicador = 2;
+
+  for (let i = rut.length - 1; i >= 0; i--) {
+    suma += parseInt(rut.charAt(i), 10) * multiplicador;
+    multiplicador = multiplicador < 7 ? multiplicador + 1 : 2;
+  }
+
+  const dvEsperado = 11 - (suma % 11);
+  let dv: string;
+  if (dvEsperado === 11) {
+    dv = '0';
+  } else if (dvEsperado === 10) {
+    dv = 'k';
+  } else {
+    dv = dvEsperado.toString();
+  }
+
+  return dv === digitoVerificador.toLowerCase();
+}
+
 export const personaSchema = z.object({
-  Rut_Persona: z.string().regex(/^\d+-[0-9kK]$/, 'Rut_Persona debe contener entre 1 y 9 dígitos seguidos de un guion y un dígito verificador (número o "k")'),
-  Nombre: z.string().min(1, 'El nombre es obligatorio').max(100, 'El nombre debe tener menos de 100 caracteres'),
-  Primer_apellido: z.string().min(1, 'El primer apellido es obligatorio').max(100, 'El primer apellido debe tener menos de 100 caracteres'),
-  Segundo_apellido: z.string().min(1, 'El segundo apellido es obligatorio').max(100, 'El segundo apellido debe tener menos de 100 caracteres'),
-  Email: z.string().email('Email inválido').max(100, 'El email debe tener menos de 100 caracteres'),
-  Telefono: z.string().min(1, 'El teléfono es obligatorio').max(9, 'El teléfono debe tener menos de 20 caracteres')
+  Rut_Persona: z.string().refine(validarRut, {
+    message: 'RUT inválido. Verifique el dígito verificador y el formato.',
+  }),
+  Nombre: z.string()
+    .min(1, 'El nombre es obligatorio')
+    .max(100, 'El nombre debe tener menos de 100 caracteres')
+    .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'El nombre solo puede contener letras'),
+  Primer_apellido: z.string()
+    .min(1, 'El primer apellido es obligatorio')
+    .max(100, 'El primer apellido debe tener menos de 100 caracteres')
+    .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'El primer apellido solo puede contener letras'),
+  Segundo_apellido: z.string()
+    .min(1, 'El segundo apellido es obligatorio')
+    .max(100, 'El segundo apellido debe tener menos de 100 caracteres')
+    .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'El segundo apellido solo puede contener letras'),
+  Email: z.string()
+    .email('Email inválido')
+    .max(100, 'El email debe tener menos de 100 caracteres')
+    .transform((email) => email.toLowerCase()),
+  Telefono: z.string()
+    .min(9, 'El teléfono debe tener al menos 9 caracteres')
+    .max(20, 'El teléfono debe tener menos de 20 caracteres')
+    .regex(/^\d+$/, 'El teléfono solo puede contener números')
 });
 
 export type PersonaSchema = z.infer<typeof personaSchema>;

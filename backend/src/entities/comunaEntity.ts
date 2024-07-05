@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'ty
 import { Region } from './regionEntity';
 import { Cliente } from './clienteEntity';
 
-@Entity()
+@Entity('Comunas')
 export class Comuna {
   @PrimaryGeneratedColumn()
   ID_Comuna: number;
@@ -10,7 +10,7 @@ export class Comuna {
   @Column({ length: 100 })
   Nombre: string;
 
-  @ManyToOne(() => Region, region => region.comunas)
+  @ManyToOne(() => Region, region => region.comunas, { onDelete: 'CASCADE' })
   region: Region;
 
   @OneToMany(() => Cliente, cliente => cliente.comuna)

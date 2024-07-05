@@ -2,17 +2,17 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { Persona } from './personaEntity';
 import { Comuna } from './comunaEntity';
 
-@Entity()
+@Entity('Clientes')
 export class Cliente {
   @PrimaryGeneratedColumn()
   ID_Cliente: number;
 
   @ManyToOne(() => Persona, persona => persona.clientes)
-  @JoinColumn({ name: 'Rut_Persona' }) // Rut_Persona de la tabla Persona Llave Foranea
+  @JoinColumn({ name: 'Rut_Persona' }) // FK
   persona: Persona;
 
   @ManyToOne(() => Comuna, comuna => comuna.clientes)
-  @JoinColumn({ name: 'ID_Comuna' }) // ID_Comuna de la tabla Comuna Llave Foranea
+  @JoinColumn({ name: 'ID_Comuna' }) // FK
   comuna: Comuna;
 
   @Column({ length: 255 })
@@ -27,13 +27,6 @@ export class Cliente {
   @Column({ length: 50 })
   Giro: string;
 
-  @Column()
+  @Column({ default: false })
   Mora: boolean;
-
-  // Nuevos atributos
-  @Column({ length: 50, nullable: true })
-  Region: string;
-
-  @Column({ length: 50, nullable: true })
-  AnotherNewAttribute: string;
 }

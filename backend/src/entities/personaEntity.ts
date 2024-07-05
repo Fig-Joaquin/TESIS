@@ -1,10 +1,13 @@
-import { Entity, PrimaryColumn, Column, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { Usuario } from './usuarioEntity';
 import { Cliente } from './clienteEntity';
 
-@Entity()
+@Entity('Personas')
 export class Persona {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  ID_Persona: number;
+
+  @Column({ length: 12, unique: true })
   Rut_Persona: string;
 
   @Column({ length: 100 })

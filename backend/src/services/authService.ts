@@ -1,39 +1,25 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
 import { AppDataSource } from '../config/data-source';
 import { Usuario } from '../entities/usuarioEntity';
-import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/jwt';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from '../config/jwt';
 
 export const login = async (Rut_Persona: string, Password: string) => {
-  Rut_Persona = Rut_Persona.toLowerCase();
   const usuarioRepository = AppDataSource.getRepository(Usuario);
-  const usuario = await usuarioRepository.findOne({
-    where: { persona: { Rut_Persona } },
-    relations: ['persona'], // Asegúrate de cargar las relaciones necesarias
-  });
+  const usuario = await usuarioRepository.findOne({ where: { persona: { Rut_Persona } }, relations: ['persona', 'roles', 'roles.rol'] });
 
   if (!usuario) {
-    throw new Error('Rut no encontrado');
+    throw new Error('Invalid credentials');
   }
 
- // console.log('Usuario encontrado:', usuario);
-
-  const isPasswordValid = await bcrypt.compare(Password, usuario.Password_Hash);
+  const isPasswordValid = await bcrypt.compare(Password, usuario.Contrasenia);
   if (!isPasswordValid) {
-    throw new Error('Contraseña Incorrecta');
+    throw new Error('Invalid credentials');
   }
 
-  console.log('Password válido:', isPasswordValid);
+  const userRoles = usuario.roles.map(rolUsuario => rolUsuario.rol.Rol);
 
-  if (!JWT_SECRET) {
-    throw new Error('JWT_SECRET no está definido');
-  }
-
-  const tokenPayload = { id: usuario.ID_Usuario, rut: usuario.persona.Rut_Persona, rol: usuario.Rol_Usuario };
- // console.log('Token payload:', tokenPayload);
-
-  const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
- // console.log('Token generado:', token);
+  const token = jwt.sign({ ID_Usuario: usuario.ID_Usuario, roles: userRoles }, JWT_SECRET, { expiresIn: '5h' });
 
   return { token, usuario };
 };

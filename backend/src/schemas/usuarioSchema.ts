@@ -1,10 +1,8 @@
 import { z } from 'zod';
 
 export const usuarioSchema = z.object({
-    ID_Usuario: z.number().optional(),
-    Rut_Persona: z.string(),
-    Rol_Usuario: z.enum(['gerente', 'administrativo', 'jefe_administrativo', 'jefe_inventario', 'inventarista']),
-    Password: z.string().min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),
+  Rut_Persona: z.string().min(1, 'El RUT es obligatorio'),
+  Contrasenia: z.string().min(1, { message: "El campo no puede estar vacío" }),
 });
 
-export type Usuario = z.infer<typeof usuarioSchema>;
+export type UsuarioSchema = z.infer<typeof usuarioSchema>;

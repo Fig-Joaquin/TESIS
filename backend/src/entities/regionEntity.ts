@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Comuna } from './comunaEntity';
 
-@Entity()
+@Entity('Regiones')
 export class Region {
   @PrimaryGeneratedColumn()
   ID_Region: number;

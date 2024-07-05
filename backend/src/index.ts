@@ -4,6 +4,10 @@ import authRoutes from './routes/authRoutes';
 import personaRoutes from './routes/personaRoutes';
 import usuarioRoutes from './routes/usuarioRoutes';
 import clienteRoutes from './routes/clienteRoutes';
+import comunaRoutes from './routes/comunaRoutes';
+import regionRoutes from './routes/regionRoutes';
+import roles from './routes/rolesRoutes';
+import rolUsuario from './routes/rolUsuarioRoutes';
 import { AppDataSource } from './config/data-source';
 
 dotenv.config();
@@ -16,6 +20,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api', personaRoutes);
 app.use('/api', usuarioRoutes);
 app.use('/api', clienteRoutes);
+app.use('/api', comunaRoutes);
+app.use('/api', regionRoutes);
+app.use('/api', roles);
+app.use('/api', rolUsuario);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');

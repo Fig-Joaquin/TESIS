@@ -1,17 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Persona } from './personaEntity';
+import { RolUsuario } from './rolUsuarioEntity';
 
-@Entity()
+@Entity('Usuarios')
 export class Usuario {
   @PrimaryGeneratedColumn()
   ID_Usuario: number;
 
   @ManyToOne(() => Persona, persona => persona.usuarios)
+  @JoinColumn({ name: 'ID_Persona' })
   persona: Persona;
 
-  @Column({ length: 50 })
-  Rol_Usuario: string;
-
   @Column()
-  Password_Hash: string;
+  Contrasenia: string;
+
+  @OneToMany(() => RolUsuario, rolUsuario => rolUsuario.usuario)
+  roles: RolUsuario[];
 }

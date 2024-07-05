@@ -2,69 +2,197 @@ import { Request, Response } from 'express';
 import { AppDataSource } from '../config/data-source';
 import { Usuario } from '../entities/usuarioEntity';
 import { Persona } from '../entities/personaEntity';
-import bcrypt from 'bcryptjs';
 import { usuarioSchema } from '../schemas/usuarioSchema';
+import { ZodValidatorAdapter } from '../plugins/zod-validator-plugin';
+import  logger  from '../utils/logger';
+import bcrypt from 'bcryptjs';
 
+// * Crear un usuario
 export const createUsuario = async (req: Request, res: Response) => {
-  // Transformar Rut_Persona a minúsculas
-  const rutPersona = req.body.Rut_Persona.toLowerCase();
-  const { Rol_Usuario, Password } = req.body;
+  const adapter = new ZodValidatorAdapter(usuarioSchema);
+  const validationResult = adapter.validateAndSanitize(req.body);
 
-  // Validar los datos
-  const parseResult = usuarioSchema.safeParse({ Rut_Persona: rutPersona, Rol_Usuario, Password });
-
-  if (!parseResult.success) {
-    return res.status(400).json({ message: 'Invalid input', errors: parseResult.error.errors });
+  if (validationResult) {
+    logger.error('Invalid input for createUsuario: %o', validationResult.errors);
+    return res.status(400).json({ message: 'Invalid input', errors: validationResult.errors });
   }
+
+  const { Rut_Persona, Contrasenia } = req.body;
 
   try {
     const personaRepository = AppDataSource.getRepository(Persona);
-    const persona = await personaRepository.findOne({ where: { Rut_Persona: rutPersona } });
+    const persona = await personaRepository.findOne({ where: { Rut_Persona } });
 
     if (!persona) {
-      return res.status(404).json({ message: 'Persona not found' });
+      logger.error('Persona not found with Rut_Persona: %s', Rut_Persona);
+      return res.status(404).json({ message: 'Persona no encontrada' });
     }
 
     const usuarioRepository = AppDataSource.getRepository(Usuario);
-    const hashedPassword = await bcrypt.hash(Password, 10);
-    const newUsuario = usuarioRepository.create({ persona, Rol_Usuario, Password_Hash: hashedPassword });
+    const existingUsuario = await usuarioRepository.findOne({ where: { persona: { Rut_Persona } } });
+
+    if (existingUsuario) {
+      logger.error('Usuario already exists with Rut_Persona: %s', Rut_Persona);
+      return res.status(409).json({ message: 'El usuario ya se encuentra registrado' });
+    }
+
+    const hashedPassword = await bcrypt.hash(Contrasenia, 10);
+
+    const newUsuario = usuarioRepository.create({
+      persona,
+      Contrasenia: hashedPassword,
+    });
     await usuarioRepository.save(newUsuario);
+
+    logger.info('Usuario created: %o', newUsuario);
     res.status(201).json(newUsuario);
   } catch (err) {
+    logger.error('Error creating usuario: %o', err);
     if (err instanceof Error) {
-      res.status(401).json({ message: err.message });
+      res.status(500).json({ message: err.message });
     } else {
-      res.status(401).json({ message: 'Ha ocurrido un error' });
+      res.status(500).json({ message: 'An unknown error occurred' });
     }
   }
 };
 
-export const deleteUsuarioByRutPersona = async (req: Request, res: Response) => {
-  // Transformar Rut_Persona a minúsculas
-  const rutPersona = req.body.Rut_Persona.toLowerCase();
+// * Actualizar un usuario
+export const updateUsuario = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const adapter = new ZodValidatorAdapter(usuarioSchema.pick({ Contrasenia: true }));
+  const validationResult = adapter.validateAndSanitize(req.body);
 
-  if (!rutPersona) {
-    return res.status(400).json({ message: 'Rut_Persona is required' });
+  if (validationResult) {
+    logger.error('Invalid input for updateUsuario: %o', validationResult.errors);
+    return res.status(400).json({ message: 'Invalid input', errors: validationResult.errors });
   }
+
+  const { Contrasenia } = req.body;
 
   try {
     const usuarioRepository = AppDataSource.getRepository(Usuario);
-    const usuario = await usuarioRepository.findOne({
-      where: { persona: { Rut_Persona: rutPersona } },
-      relations: ['persona'], // Asegúrate de cargar las relaciones necesarias
-    });
+    const usuario = await usuarioRepository.findOne({ where: { ID_Usuario: Number(id) }, relations: ['persona'] });
 
     if (!usuario) {
+      logger.error('Usuario not found: %s', id);
+      return res.status(404).json({ message: 'Usuario not found' });
+    }
+
+    const hashedPassword = await bcrypt.hash(Contrasenia, 10);
+    usuario.Contrasenia = hashedPassword;
+
+    await usuarioRepository.save(usuario);
+    logger.info('Usuario updated: %o', usuario);
+    res.status(200).json(usuario);
+  } catch (err) {
+    logger.error('Error updating usuario: %o', err);
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: 'An unknown error occurred' });
+    }
+  }
+};
+
+// * Obtener todos los usuarios
+export const getAllUsuarios = async (req: Request, res: Response) => {
+  try {
+    const usuarioRepository = AppDataSource.getRepository(Usuario);
+    const usuarios = await usuarioRepository.find({ relations: ['persona'] });
+    res.status(200).json(usuarios);
+  } catch (err) {
+    logger.error('Error fetching usuarios: %o', err);
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: 'An unknown error occurred' });
+    }
+  }
+};
+
+// * Obtener un usuario por su ID
+export const getUsuarioById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const usuarioRepository = AppDataSource.getRepository(Usuario);
+    const usuario = await usuarioRepository.findOne({ where: { ID_Usuario: Number(id) }, relations: ['persona'] });
+
+    if (!usuario) {
+      logger.error('Usuario not found: %s', id);
+      return res.status(404).json({ message: 'Usuario not found' });
+    }
+
+    res.status(200).json(usuario);
+  } catch (err) {
+    logger.error('Error fetching usuario: %o', err);
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: 'An unknown error occurred' });
+    }
+  }
+};
+
+// * Eliminar un usuario por su ID
+export const deleteUsuario = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const usuarioRepository = AppDataSource.getRepository(Usuario);
+    const usuario = await usuarioRepository.findOne({ where: { ID_Usuario: Number(id) }, relations: ['persona'] });
+
+    if (!usuario) {
+      logger.error('Usuario not found: %s', id);
       return res.status(404).json({ message: 'Usuario not found' });
     }
 
     await usuarioRepository.remove(usuario);
+    logger.info('Usuario deleted: %o', usuario);
     res.status(200).json({ message: 'Usuario deleted successfully' });
   } catch (err) {
+    logger.error('Error deleting usuario: %o', err);
     if (err instanceof Error) {
       res.status(500).json({ message: err.message });
     } else {
-      res.status(500).json({ message: 'An error occurred' });
+      res.status(500).json({ message: 'An unknown error occurred' });
+    }
+  }
+};
+
+// * Restablecer la contraseña de un usuario
+export const resetUsuarioPassword = async (req: Request, res: Response) => {
+  const adapter = new ZodValidatorAdapter(usuarioSchema.pick({ Rut_Persona: true, Contrasenia: true }));
+  const validationResult = adapter.validateAndSanitize(req.body);
+
+  if (validationResult) {
+    logger.error('Invalid input for resetUsuarioPassword: %o', validationResult.errors);
+    return res.status(400).json({ message: 'Invalid input', errors: validationResult.errors });
+  }
+
+  const { Rut_Persona, Contrasenia } = req.body;
+
+  try {
+    const usuarioRepository = AppDataSource.getRepository(Usuario);
+    const usuario = await usuarioRepository.findOne({ where: { persona: { Rut_Persona } }, relations: ['persona'] });
+
+    if (!usuario) {
+      logger.error('Usuario not found with Rut_Persona: %s', Rut_Persona);
+      return res.status(404).json({ message: 'Usuario not found' });
+    }
+
+    const hashedPassword = await bcrypt.hash(Contrasenia, 10);
+    usuario.Contrasenia = hashedPassword;
+
+    await usuarioRepository.save(usuario);
+    logger.info('Usuario password reset: %o', usuario);
+    res.status(200).json({ message: 'Password reset successfully' });
+  } catch (err) {
+    logger.error('Error resetting usuario password: %o', err);
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: 'An unknown error occurred' });
     }
   }
 };
