@@ -28,7 +28,7 @@ function validarRut(rutCompleto: string): boolean {
   return dv === digitoVerificador.toLowerCase();
 }
 
-export const personaSchema = z.object({
+export const personaSchemaRegistro = z.object({
   Rut_Persona: z.string().refine(validarRut, {
     message: 'RUT inválido. Verifique el dígito verificador y el formato.',
   }),
@@ -41,17 +41,20 @@ export const personaSchema = z.object({
     .max(100, 'El primer apellido debe tener menos de 100 caracteres')
     .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'El primer apellido solo puede contener letras'),
   Segundo_apellido: z.string()
-    .min(1, 'El segundo apellido es obligatorio')
     .max(100, 'El segundo apellido debe tener menos de 100 caracteres')
-    .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'El segundo apellido solo puede contener letras'),
+    .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/, 'El segundo apellido solo puede contener letras')
+    .optional(),  // Segundo apellido es opcional
   Email: z.string()
     .email('Email inválido')
     .max(100, 'El email debe tener menos de 100 caracteres')
-    .transform((email) => email.toLowerCase()),
+    .optional()
+    .transform((email) => email ? email.toLowerCase() : email),  // Email es opcional
   Telefono: z.string()
     .min(9, 'El teléfono debe tener al menos 9 caracteres')
     .max(20, 'El teléfono debe tener menos de 20 caracteres')
     .regex(/^\d+$/, 'El teléfono solo puede contener números')
 });
 
-export type PersonaSchema = z.infer<typeof personaSchema>;
+export type PersonaRegistroSchema = z.infer<typeof personaSchemaRegistro>;
+export const personaSchemaActualizacion = personaSchemaRegistro.partial();
+export type PersonaActualizacionSchema = z.infer<typeof personaSchemaActualizacion>;

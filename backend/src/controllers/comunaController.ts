@@ -4,6 +4,7 @@ import { Comuna } from '../entities/comunaEntity';
 import { comunaSchema } from '../schemas/comunaSchema';
 import { ZodValidatorAdapter } from '../plugins/zod-validator-plugin';
 import { Region } from '../entities/regionEntity';
+import logger from '../utils/logger';
 
 // Crear una instancia del adaptador de validación
 const validator = new ZodValidatorAdapter(comunaSchema);
@@ -12,6 +13,7 @@ const validator = new ZodValidatorAdapter(comunaSchema);
 export const createComuna = async (req: Request, res: Response) => {
   const validationResult = validator.validateAndSanitize(req.body);
   if (validationResult && validationResult.errors) {
+    logger.error('Invalid input for createComuna: %o', validationResult.errors);
     return res.status(400).json({ message: 'Invalid input for comuna', errors: validationResult.errors });
   }
 
@@ -24,13 +26,16 @@ export const createComuna = async (req: Request, res: Response) => {
     // Verificar si la región existe
     const region = await regionRepository.findOne({ where: { ID_Region } });
     if (!region) {
+      logger.warn('Region not found for ID_Region: %s', ID_Region);
       return res.status(404).json({ message: 'Region not found' });
     }
 
-    const newComuna = comunaRepository.create({ Nombre, region });
+    const newComuna = comunaRepository.create({ Nombre, Region: region });
     await comunaRepository.save(newComuna);
+    logger.info('Comuna created: %o', newComuna);
     res.status(201).json(newComuna);
   } catch (err) {
+    logger.error('Error creating Comuna: %o', err);
     if (err instanceof Error) {
       res.status(500).json({ message: err.message });
     } else {
@@ -43,9 +48,10 @@ export const createComuna = async (req: Request, res: Response) => {
 export const getAllComunas = async (req: Request, res: Response) => {
   try {
     const comunaRepository = AppDataSource.getRepository(Comuna);
-    const comunas = await comunaRepository.find({ relations: ['region'] });
+    const comunas = await comunaRepository.find({ relations: ['Region'] });
     res.status(200).json(comunas);
   } catch (err) {
+    logger.error('Error fetching comunas: %o', err);
     if (err instanceof Error) {
       res.status(500).json({ message: err.message });
     } else {
@@ -60,14 +66,16 @@ export const getComunaById = async (req: Request, res: Response) => {
 
   try {
     const comunaRepository = AppDataSource.getRepository(Comuna);
-    const comuna = await comunaRepository.findOne({ where: { ID_Comuna: Number(id) }, relations: ['region'] });
+    const comuna = await comunaRepository.findOne({ where: { ID_Comuna: Number(id) }, relations: ['Region'] });
 
     if (!comuna) {
+      logger.warn('Comuna not found for ID_Comuna: %s', id);
       return res.status(404).json({ message: 'Comuna not found' });
     }
 
     res.status(200).json(comuna);
   } catch (err) {
+    logger.error('Error fetching Comuna by ID: %o', err);
     if (err instanceof Error) {
       res.status(500).json({ message: err.message });
     } else {
@@ -81,6 +89,7 @@ export const updateComuna = async (req: Request, res: Response) => {
   const { id } = req.params;
   const validationResult = validator.validateAndSanitize(req.body);
   if (validationResult && validationResult.errors) {
+    logger.error('Invalid input for updateComuna: %o', validationResult.errors);
     return res.status(400).json({ message: 'Invalid input for comuna', errors: validationResult.errors });
   }
 
@@ -93,22 +102,26 @@ export const updateComuna = async (req: Request, res: Response) => {
     // Verificar si la comuna existe
     const comuna = await comunaRepository.findOne({ where: { ID_Comuna: Number(id) } });
     if (!comuna) {
+      logger.warn('Comuna not found for ID_Comuna: %s', id);
       return res.status(404).json({ message: 'Comuna not found' });
     }
 
     // Verificar si la región existe
     const region = await regionRepository.findOne({ where: { ID_Region } });
     if (!region) {
+      logger.warn('Region not found for ID_Region: %s', ID_Region);
       return res.status(404).json({ message: 'Region not found' });
     }
 
     // Actualizar la comuna
     comuna.Nombre = Nombre;
-    comuna.region = region;
+    comuna.Region = region;
 
     await comunaRepository.save(comuna);
+    logger.info('Comuna updated: %o', comuna);
     res.status(200).json(comuna);
   } catch (err) {
+    logger.error('Error updating Comuna: %o', err);
     if (err instanceof Error) {
       res.status(500).json({ message: err.message });
     } else {
@@ -127,12 +140,15 @@ export const deleteComuna = async (req: Request, res: Response) => {
     // Verificar si la comuna existe
     const comuna = await comunaRepository.findOne({ where: { ID_Comuna: Number(id) } });
     if (!comuna) {
+      logger.warn('Comuna not found for ID_Comuna: %s', id);
       return res.status(404).json({ message: 'Comuna not found' });
     }
 
     await comunaRepository.remove(comuna);
+    logger.info('Comuna deleted: %o', comuna);
     res.status(200).json({ message: 'Comuna deleted successfully' });
   } catch (err) {
+    logger.error('Error deleting Comuna: %o', err);
     if (err instanceof Error) {
       res.status(500).json({ message: err.message });
     } else {

@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Region } from './regionEntity';
 import { Cliente } from './clienteEntity';
 
-@Entity('Comunas')
+@Entity('Comuna')
 export class Comuna {
   @PrimaryGeneratedColumn()
   ID_Comuna: number;
@@ -11,8 +11,9 @@ export class Comuna {
   Nombre: string;
 
   @ManyToOne(() => Region, region => region.comunas, { onDelete: 'CASCADE' })
-  region: Region;
+  @JoinColumn({ name: 'ID_Region' })
+  Region: Region;
 
-  @OneToMany(() => Cliente, cliente => cliente.comuna)
-  clientes: Cliente[];
+  @OneToMany(() => Cliente, cliente => cliente.Comuna)
+  Clientes: Cliente[];
 }

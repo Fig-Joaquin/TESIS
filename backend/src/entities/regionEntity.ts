@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Comuna } from './comunaEntity';
 
-@Entity('Regiones')
+@Entity('Region')
 export class Region {
   @PrimaryGeneratedColumn()
   ID_Region: number;
@@ -9,6 +9,6 @@ export class Region {
   @Column({ length: 100 })
   Nombre: string;
 
-  @OneToMany(() => Comuna, comuna => comuna.region)
+  @OneToMany(() => Comuna, comuna => comuna.Region)
   comunas: Comuna[];
 }

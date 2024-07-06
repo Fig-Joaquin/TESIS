@@ -7,7 +7,7 @@ export class Usuario {
   @PrimaryGeneratedColumn()
   ID_Usuario: number;
 
-  @ManyToOne(() => Persona, persona => persona.usuarios)
+  @ManyToOne(() => Persona, persona => persona.Usuarios)
   @JoinColumn({ name: 'ID_Persona' })
   persona: Persona;
 

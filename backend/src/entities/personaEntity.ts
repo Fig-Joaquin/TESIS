@@ -19,28 +19,32 @@ export class Persona {
   @Column({ length: 100 })
   Segundo_apellido: string;
 
-  @Column({ length: 100, unique: true })
+  @Column({ length: 100 })
   Email: string;
 
   @Column({ length: 20 })
   Telefono: string;
 
   @OneToMany(() => Usuario, usuario => usuario.persona)
-  usuarios: Usuario[];
+  Usuarios: Usuario[];
 
-  @OneToMany(() => Cliente, cliente => cliente.persona)
-  clientes: Cliente[];
+  @OneToMany(() => Cliente, cliente => cliente.Persona)
+  Clientes: Cliente[];
 
   @BeforeInsert()
   @BeforeUpdate()
   formatFields() {
-     // Convertir Rut_Persona y Email a minúsculas
+    // Convertir Rut_Persona y Email a minúsculas
     this.Rut_Persona = this.Rut_Persona.toLowerCase();
-    this.Email = this.Email.toLowerCase();
+
+    if(!this.Email === undefined || null)
+      this.Email = this.Email.toLowerCase();
     
     // Asegurar que el Rut_Persona termine con 'k' minúscula si es necesario
-    if (this.Rut_Persona.endsWith('k')) {
-      this.Rut_Persona = this.Rut_Persona.slice(0, -1) + 'k';
+    const rutLength = this.Rut_Persona.length;
+
+    if (rutLength > 1 && this.Rut_Persona[rutLength - 1].toLowerCase() === 'k') {
+      this.Rut_Persona = this.Rut_Persona.slice(0, rutLength - 1) + 'k';
     }
   }
 }

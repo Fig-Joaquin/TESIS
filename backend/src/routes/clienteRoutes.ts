@@ -1,39 +1,36 @@
 import { Router } from 'express';
-import { createPersonaCliente, filterClientes, getClientes, getClienteByRut, deleteClienteByRut, updateClienteByRut} from '../controllers/clienteController';
+import { createPersonaCliente, filterClientes, getClientes, getClienteByRut,/* deleteClienteByRut*/ updateClienteByRut,getClienteById} from '../controllers/clienteController';
 import { authMiddleware, roleMiddleware } from '../middleware/roleMiddleware';
 
 const router = Router();
+router.use(authMiddleware);
 
 router.post(
     '/persona-cliente',
-    authMiddleware,
     roleMiddleware(['gerente', 'jefe_administrativo']),
-    createPersonaCliente
-);
+    createPersonaCliente); // Checked
 router.get('/clientes',
-    authMiddleware,
     roleMiddleware(['gerente', 'jefe_administrativo','administrativo']),
-    getClientes
-)
+    getClientes) // Checked
 
 router.get('/rut-del-cliente/:rut',
-    authMiddleware,
     roleMiddleware(['gerente', 'jefe_administrativo','administrativo']),
-    getClienteByRut
-)
+    getClienteByRut) // Checked
+router.get('/rut-cliente/:id',
+    roleMiddleware(['gerente', 'jefe_administrativo','administrativo']),
+    getClienteById)  // Checked
+
 router.get('/clientes/filter', 
-    authMiddleware,
     roleMiddleware(['gerente', 'jefe_administrativo']),
-    filterClientes);
+    filterClientes); // Checked
 
 router.put('/clientes/:rut',
-    authMiddleware, 
     roleMiddleware(['gerente', 'jefe_administrativo']),
-    updateClienteByRut); // Cambiar de id a rut
+    updateClienteByRut); // Cambiar de id a rut  //! NO Checked
 
-router.delete('/clientes/:rut',
-    authMiddleware,
-    roleMiddleware(['gerente', 'jefe_administrativo']),
-    deleteClienteByRut); // Cambiar de id a rut
+// router.delete('/clientes/:rut',
+//     authMiddleware,
+//     roleMiddleware(['gerente', 'jefe_administrativo']),
+//     deleteClienteByRut); // Cambiar de id a rut
 
 export default router;

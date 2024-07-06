@@ -1,62 +1,18 @@
 import { Router } from 'express';
-import {
-  createUsuario,
-  updateUsuario,
-  getAllUsuarios,
-  getUsuarioById,
-  deleteUsuario,
-  resetUsuarioPassword,
-} from '../controllers/usuarioController';
+import { createUsuario, updateUsuario, getAllUsuarios, getUsuarioById, deleteUsuario, resetUsuarioPassword } from '../controllers/usuarioController';
 import { authMiddleware, roleMiddleware } from '../middleware/roleMiddleware';
 
 const router = Router();
 
-// Ruta para crear un nuevo usuario
-router.post(
-  '/crearusuario',
-  authMiddleware,
-  roleMiddleware(['gerente', 'jefe_administrativo']),
-  createUsuario
-);
+router.use(authMiddleware);
 
-// Ruta para actualizar un usuario
-router.put(
-  '/:id',
-//   authMiddleware,
-//   roleMiddleware(['gerente', 'jefe_administrativo']),
-  updateUsuario
-);
-
-// Ruta para obtener todos los usuarios
-router.get(
-  '/',
-//   authMiddleware,
-//   roleMiddleware(['gerente', 'jefe_administrativo']),
-  getAllUsuarios
-);
-
-// Ruta para obtener un usuario por su ID
-router.get(
-  '/:id',
-//   authMiddleware,
-//   roleMiddleware(['gerente', 'jefe_administrativo']),
-  getUsuarioById
-);
-
-// Ruta para eliminar un usuario por su ID
-router.delete(
-  '/:id',
-//   authMiddleware,
-//   roleMiddleware(['gerente', 'jefe_administrativo']),
-  deleteUsuario
-);
-
-// Ruta para restablecer la contraseña de un usuario
-router.post(
-  '/reset-password',
-//   authMiddleware,
-//   roleMiddleware(['gerente', 'jefe_administrativo']),
-  resetUsuarioPassword
-);
+// Rutas para usuarios
+router.post('/crear-usuario', roleMiddleware(['gerente']), createUsuario); // Checked
+router.put('/cambiar-password/:id', roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo', 'jefe_inventarista', 'inventarista']),
+    updateUsuario); //! NO CHECKED
+router.get('/usuarios', roleMiddleware(['gerente']), getAllUsuarios); // Checked 
+router.get('/usuarios/:id', roleMiddleware(['gerente']), getUsuarioById); // Checked 
+router.delete('/usuarios/:id', roleMiddleware(['gerente']), deleteUsuario); //! NO CHECKED
+router.post('/usuarios/reset-password', roleMiddleware(['gerente', 'jefe_administrativo']), resetUsuarioPassword);  //! NO CHECKED
 
 export default router;

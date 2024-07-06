@@ -1,38 +1,41 @@
 import { Request, Response } from 'express';
 import { AppDataSource } from '../config/data-source';
-import { Usuario } from '../entities/usuarioEntity';
 import { Persona } from '../entities/personaEntity';
-import { usuarioSchema } from '../schemas/usuarioSchema';
+import { Usuario } from '../entities/usuarioEntity';
 import { ZodValidatorAdapter } from '../plugins/zod-validator-plugin';
-import  logger  from '../utils/logger';
+import { usuarioSchema } from '../schemas/usuarioSchema';
 import bcrypt from 'bcryptjs';
+import logger from '../utils/logger';
 
 // * Crear un usuario
 export const createUsuario = async (req: Request, res: Response) => {
   const adapter = new ZodValidatorAdapter(usuarioSchema);
   const validationResult = adapter.validateAndSanitize(req.body);
 
-  if (validationResult) {
+  if (validationResult && !validationResult.success) {
     logger.error('Invalid input for createUsuario: %o', validationResult.errors);
     return res.status(400).json({ message: 'Invalid input', errors: validationResult.errors });
   }
 
-  const { Rut_Persona, Contrasenia } = req.body;
+  const { Rut_Persona, Contrasenia } = validationResult.data;
+
+  // Convertir Rut_Persona a minúsculas
+  const lowerCaseRut = Rut_Persona.toLowerCase();
 
   try {
     const personaRepository = AppDataSource.getRepository(Persona);
-    const persona = await personaRepository.findOne({ where: { Rut_Persona } });
+    const persona = await personaRepository.findOne({ where: { Rut_Persona: lowerCaseRut } });
 
     if (!persona) {
-      logger.error('Persona not found with Rut_Persona: %s', Rut_Persona);
+      logger.error('Persona not found with Rut_Persona: %s', lowerCaseRut);
       return res.status(404).json({ message: 'Persona no encontrada' });
     }
 
     const usuarioRepository = AppDataSource.getRepository(Usuario);
-    const existingUsuario = await usuarioRepository.findOne({ where: { persona: { Rut_Persona } } });
+    const existingUsuario = await usuarioRepository.findOne({ where: { persona: { Rut_Persona: lowerCaseRut } } });
 
     if (existingUsuario) {
-      logger.error('Usuario already exists with Rut_Persona: %s', Rut_Persona);
+      logger.error('Usuario already exists with Rut_Persona: %s', lowerCaseRut);
       return res.status(409).json({ message: 'El usuario ya se encuentra registrado' });
     }
 
@@ -56,13 +59,15 @@ export const createUsuario = async (req: Request, res: Response) => {
   }
 };
 
-// * Actualizar un usuario
+
+
+// * Actualizar contraseña de un Usuario a tráves la ID
 export const updateUsuario = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { id } = req.params; // Aquí id se refiere al RUT de la persona
   const adapter = new ZodValidatorAdapter(usuarioSchema.pick({ Contrasenia: true }));
   const validationResult = adapter.validateAndSanitize(req.body);
 
-  if (validationResult) {
+  if (validationResult && validationResult.errors) {
     logger.error('Invalid input for updateUsuario: %o', validationResult.errors);
     return res.status(400).json({ message: 'Invalid input', errors: validationResult.errors });
   }
@@ -71,7 +76,7 @@ export const updateUsuario = async (req: Request, res: Response) => {
 
   try {
     const usuarioRepository = AppDataSource.getRepository(Usuario);
-    const usuario = await usuarioRepository.findOne({ where: { ID_Usuario: Number(id) }, relations: ['persona'] });
+    const usuario = await usuarioRepository.findOne({ where: { persona: { Rut_Persona: id } }, relations: ['persona'] });
 
     if (!usuario) {
       logger.error('Usuario not found: %s', id);
@@ -115,8 +120,14 @@ export const getUsuarioById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
+    const usuarioId = parseInt(id, 10);
+    if (isNaN(usuarioId)) {
+      logger.error('Invalid ID format: %s', id);
+      return res.status(400).json({ message: 'Invalid ID format' });
+    }
+
     const usuarioRepository = AppDataSource.getRepository(Usuario);
-    const usuario = await usuarioRepository.findOne({ where: { ID_Usuario: Number(id) }, relations: ['persona'] });
+    const usuario = await usuarioRepository.findOne({ where: { ID_Usuario: usuarioId }, relations: ['persona'] });
 
     if (!usuario) {
       logger.error('Usuario not found: %s', id);
@@ -139,8 +150,14 @@ export const deleteUsuario = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
+    const usuarioId = parseInt(id, 10);
+    if (isNaN(usuarioId)) {
+      logger.error('Invalid ID format: %s', id);
+      return res.status(400).json({ message: 'Invalid ID format' });
+    }
+
     const usuarioRepository = AppDataSource.getRepository(Usuario);
-    const usuario = await usuarioRepository.findOne({ where: { ID_Usuario: Number(id) }, relations: ['persona'] });
+    const usuario = await usuarioRepository.findOne({ where: { ID_Usuario: usuarioId }, relations: ['persona'] });
 
     if (!usuario) {
       logger.error('Usuario not found: %s', id);
@@ -159,6 +176,9 @@ export const deleteUsuario = async (req: Request, res: Response) => {
     }
   }
 };
+
+
+
 
 // * Restablecer la contraseña de un usuario
 export const resetUsuarioPassword = async (req: Request, res: Response) => {

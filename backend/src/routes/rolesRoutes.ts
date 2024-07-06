@@ -1,12 +1,14 @@
 import { Router } from 'express';
-import { createRol, getAllRoles, deleteRolById, deleteRolByName, updateRol } from '../controllers/rolesController';
+import { createRol, getAllRoles, /*deleteRolById, deleteRolByName,*/ updateRol } from '../controllers/rolesController';
+import { authMiddleware } from '../middleware/authMiddleware';
+import { roleMiddleware } from '../middleware/roleMiddleware';
 
 const router = Router();
-
-router.post('/roles', createRol);
-router.get('/roles', getAllRoles);
-router.delete('/roles/:id', deleteRolById);
-router.delete('/roles/name/:name', deleteRolByName);
-router.put('/roles/:id', updateRol);
+router.use(authMiddleware)
+router.post('/roles', roleMiddleware(["gerente"]), createRol); // CHECKED
+router.get('/roles', getAllRoles); // CHEKED
+// router.delete('/roles/:id', deleteRolById);
+// router.delete('/roles/name/:name', deleteRolByName);
+router.put('/roles/:id', updateRol); //! NO CHECKED
 
 export default router;

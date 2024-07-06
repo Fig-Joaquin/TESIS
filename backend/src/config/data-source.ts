@@ -6,14 +6,11 @@ import { Region } from '../entities/regionEntity';
 import { Comuna } from '../entities/comunaEntity';
 import { RolUsuario } from '../entities/rolUsuarioEntity';
 import { Roles } from '../entities/rolesEntity';
-
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-
 export const AppDataSource = new DataSource({
-  
   type: 'postgres',
   host: process.env.DB_HOST ?? 'localhost',
   port: parseInt(process.env.DB_PORT ?? '5432', 10),
@@ -23,6 +20,17 @@ export const AppDataSource = new DataSource({
   entities: [Usuario, Persona, Cliente, Region, Comuna, RolUsuario, Roles],
   synchronize: true,
   logging: false,
-  migrations: [],
+  migrations: ['src/migrations/*.ts'],
   subscribers: [],
 });
+
+AppDataSource.initialize()
+  .then(async () => {
+    console.log('Data Source has been initialized!');
+
+    const queryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.query('CREATE EXTENSION IF NOT EXISTS unaccent');
+    await queryRunner.release();
+  })
+  .catch((error) => console.log('Error during Data Source initialization:', error));

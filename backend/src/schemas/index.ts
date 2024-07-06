@@ -1,5 +1,5 @@
-import { personaSchema } from '../schemas/personaSchema';
+import { personaSchemaRegistro } from '../schemas/personaSchema';
 import { clienteSchema } from '../schemas/clienteSchema';
 
 
-export {personaSchema, clienteSchema}
+export {personaSchemaRegistro, clienteSchema}

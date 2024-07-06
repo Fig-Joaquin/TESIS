@@ -77,3 +77,18 @@ export const updatePersona = async (req: Request, res: Response) => {
     }
   }
 };
+//
+
+Asegurando que la Extensión se Cree en Docker
+Si estás usando Docker para desplegar tu base de datos, asegúrate de que la extensión unaccent se cree cuando el contenedor se inicie. Puedes hacerlo añadiendo un script SQL que se ejecute al iniciar el contenedor PostgreSQL.
+
+En tu Dockerfile o docker-compose.yml, puedes agregar el siguiente script para crear la extensión:
+
+# Dockerfile example
+FROM postgres:latest
+
+COPY ./init.sql /docker-entrypoint-initdb.d/
+
+
+El archivo init.sql debe contener:
+CREATE EXTENSION IF NOT EXISTS unaccent;

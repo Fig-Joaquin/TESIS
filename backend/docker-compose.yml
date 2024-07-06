@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: default_username
+      POSTGRES_PASSWORD: default_password
+      POSTGRES_DB: default_database
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: default_username
+      DB_PASSWORD: default_password
+      DB_NAME: default_database
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    command: npm run dev
+
+volumes:
+  pgdata:

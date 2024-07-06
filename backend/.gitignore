@@ -1,7 +1,7 @@
 test-bd
 
 sql.txt
-
+src/res.txt
 # Node.js
 node_modules/
 npm-debug.log

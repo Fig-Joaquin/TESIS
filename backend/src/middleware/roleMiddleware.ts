@@ -7,8 +7,8 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    logger.warn('No token provided');
-    return res.status(401).json({ message: 'No token provided' });
+    logger.warn('No hay Token');
+    return res.status(401).json({ message: 'No existe Token' });
   }
 
   const token = authHeader.split(' ')[1];
@@ -29,8 +29,8 @@ export const roleMiddleware = (roles: string[]) => {
     if (user && roles.some(role => user.roles.includes(role))) {
       next();
     } else {
-      logger.warn('Forbidden: Insufficient role');
-      return res.status(403).json({ message: 'Forbidden: Insufficient role' });
+      logger.warn('No tienes permisos suficientes');
+      return res.status(403).json({ message: 'No tienes permisos suficientes' });
     }
   };
 };

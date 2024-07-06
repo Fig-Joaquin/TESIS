@@ -13,12 +13,14 @@ import { roleMiddleware } from '../middleware/roleMiddleware';
 
 const router = Router();
 
-router.post('/crear-persona', authMiddleware, roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), createPersona);
-router.put('/actualizar-persona/:rut', authMiddleware, roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), updatePersona);
-router.get('/mostrar-personas', authMiddleware, roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), getAllPersonas);
-router.delete('/eliminar-persona/:rut', authMiddleware, roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), deletePersona);
-router.get('/buscarpersonas-criterios', authMiddleware, roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), searchPersonas);
-router.get('/contar-personas', authMiddleware, roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), countPersonas);
-router.get('/buscar-persona/:rut', authMiddleware, roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), getPersonaById); // Replace 'getPersonaByRut' with 'getPersonaById'
+router.use(authMiddleware)
+
+router.post('/crear-persona', roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), createPersona); // Checkes
+router.put('/actualizar-persona/:id', roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), updatePersona); // Checked
+router.get('/mostrar-personas', roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), getAllPersonas); // Checkes
+router.delete('/eliminar-persona/:id', roleMiddleware(['gerente', 'jefe_administrativo']), deletePersona); // Checked
+router.get('/buscarpersonas-criterios', roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), searchPersonas); // Cheked
+router.get('/contar-personas', roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), countPersonas); // Checked
+router.get('/buscar-persona/:id', roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo']), getPersonaById); // Checkedc
 
 export default router;

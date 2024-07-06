@@ -7,13 +7,13 @@ export class Cliente {
   @PrimaryGeneratedColumn()
   ID_Cliente: number;
 
-  @ManyToOne(() => Persona, persona => persona.clientes)
+  @ManyToOne(() => Persona, persona => persona.Clientes)
   @JoinColumn({ name: 'Rut_Persona' }) // FK
-  persona: Persona;
+  Persona: Persona;
 
-  @ManyToOne(() => Comuna, comuna => comuna.clientes)
+  @ManyToOne(() => Comuna, comuna => comuna.Clientes)
   @JoinColumn({ name: 'ID_Comuna' }) // FK
-  comuna: Comuna;
+  Comuna: Comuna;
 
   @Column({ length: 255 })
   Direccion: string;

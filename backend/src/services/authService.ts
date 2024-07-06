@@ -4,17 +4,17 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config/jwt';
 
-export const login = async (Rut_Persona: string, Password: string) => {
+export const login = async (Rut_Persona: string, Contrasenia: string) => {
   const usuarioRepository = AppDataSource.getRepository(Usuario);
   const usuario = await usuarioRepository.findOne({ where: { persona: { Rut_Persona } }, relations: ['persona', 'roles', 'roles.rol'] });
 
   if (!usuario) {
-    throw new Error('Invalid credentials');
+    throw new Error('RUT no encontrado');
   }
 
-  const isPasswordValid = await bcrypt.compare(Password, usuario.Contrasenia);
+  const isPasswordValid = await bcrypt.compare(Contrasenia, usuario.Contrasenia);
   if (!isPasswordValid) {
-    throw new Error('Invalid credentials');
+    throw new Error('Contraseña incorrecta');
   }
 
   const userRoles = usuario.roles.map(rolUsuario => rolUsuario.rol.Rol);
