@@ -7,10 +7,10 @@ const router = Router();
 router.use(authMiddleware);
 
 // Rutas para detalle de pedidos
-router.post('/crear-detalle-pedido', roleMiddleware(['jefe_inventario', 'inventarista']), createDetallePedido);
-router.put('/actualizar-detalle-pedido/:id', roleMiddleware(['jefe_inventario', 'inventarista']), updateDetallePedido);
-router.get('/detalle-pedidos', roleMiddleware(['jefe_inventario', 'inventarista']), getAllDetallePedidos);
-router.get('/detalle-pedidos/:id', roleMiddleware(['jefe_inventario', 'inventarista']), getDetallePedidoById);
-router.delete('/eliminar-detalle-pedido/:id', roleMiddleware(['jefe_inventario']), deleteDetallePedido);
+router.post('/crear-detalle-pedido', roleMiddleware(['gerente', 'jefe_inventarista']), createDetallePedido);
+router.put('/actualizar-detalle-pedido/:id', roleMiddleware(['gerente', 'jefe_inventarista']), updateDetallePedido);
+router.get('/detalle-pedidos', roleMiddleware(['gerente', 'jefe_inventarista']), getAllDetallePedidos);
+router.get('/detalle-pedidos/:id', roleMiddleware(['gerente', 'jefe_inventarista']), getDetallePedidoById);
+router.delete('/eliminar-detalle-pedido/:id', roleMiddleware(['gerente', 'jefe_inventarista']), deleteDetallePedido);
 
 export default router;

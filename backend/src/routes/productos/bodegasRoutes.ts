@@ -7,10 +7,10 @@ const router = Router();
 router.use(authMiddleware);
 
 // Rutas para bodegas
-router.post('/crear-bodega', roleMiddleware(['jefe_inventario']), createBodega);
-router.put('/actualizar-bodega/:id', roleMiddleware(['jefe_inventario']), updateBodega);
-router.get('/bodegas', roleMiddleware(['jefe_inventario', 'inventarista']), getAllBodegas);
-router.get('/bodegas/:id', roleMiddleware(['jefe_inventario', 'inventarista']), getBodegaById);
-router.delete('/eliminar-bodega/:id', roleMiddleware(['jefe_inventario']), deleteBodega);
+router.post('/crear-bodega', roleMiddleware(['gerente', 'jefe_inventarista']), createBodega);
+router.put('/actualizar-bodega/:id', roleMiddleware(['gerente', 'jefe_inventarista']), updateBodega);
+router.get('/bodegas', roleMiddleware(['gerente', 'jefe_inventarista']), getAllBodegas);
+router.get('/bodegas/:id', roleMiddleware(['gerente', 'jefe_inventarista']), getBodegaById);
+router.delete('/eliminar-bodega/:id', roleMiddleware(['gerente', 'jefe_inventarista']), deleteBodega);
 
 export default router;

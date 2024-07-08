@@ -7,10 +7,10 @@ const router = Router();
 router.use(authMiddleware);
 
 // Rutas para productos
-router.post('/crear-producto', roleMiddleware(['jefe_inventario', 'inventarista']), createProducto);
-router.put('/actualizar-producto/:id', roleMiddleware(['jefe_inventario', 'inventarista']), updateProducto);
-router.get('/productos', roleMiddleware(['jefe_inventario', 'inventarista']), getAllProductos);
-router.get('/productos/:id', roleMiddleware(['jefe_inventario', 'inventarista']), getProductoById);
-router.delete('/eliminar-producto/:id', roleMiddleware(['jefe_inventario']), deleteProducto);
+router.post('/crear-producto', roleMiddleware(['gerente', 'jefe_inventarista']), createProducto);
+router.put('/actualizar-producto/:id', roleMiddleware(['gerente', 'jefe_inventarista']), updateProducto);
+router.get('/productos', roleMiddleware(['gerente', 'jefe_inventarista']), getAllProductos);
+router.get('/productos/:id', roleMiddleware(['gerente', 'jefe_inventarista']), getProductoById);
+router.delete('/eliminar-producto/:id', roleMiddleware(['gerente', 'jefe_inventarista']), deleteProducto);
 
 export default router;

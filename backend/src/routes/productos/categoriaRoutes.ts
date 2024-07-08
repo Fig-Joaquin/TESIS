@@ -7,10 +7,10 @@ const router = Router();
 router.use(authMiddleware);
 
 // Rutas para categorías
-router.post('/crear-categoria', roleMiddleware(['jefe_inventario']), createCategoria);
-router.put('/actualizar-categoria/:id', roleMiddleware(['jefe_inventario']), updateCategoria);
-router.get('/categorias', roleMiddleware(['jefe_inventario', 'inventarista']), getAllCategorias);
-router.get('/categorias/:id', roleMiddleware(['jefe_inventario', 'inventarista']), getCategoriaById);
-router.delete('/eliminar-categoria/:id', roleMiddleware(['jefe_inventario']), deleteCategoria);
+router.post('/crear-categoria', roleMiddleware(['gerente', 'jefe_inventarista']), createCategoria);
+router.put('/actualizar-categoria/:id', roleMiddleware(['gerente', 'jefe_inventarista']), updateCategoria);
+router.get('/categorias', roleMiddleware(['gerente', 'jefe_inventarista']), getAllCategorias);
+router.get('/categorias/:id', roleMiddleware(['gerente', 'jefe_inventarista']), getCategoriaById);
+router.delete('/eliminar-categoria/:id', roleMiddleware(['gerente', 'jefe_inventarista']), deleteCategoria);
 
 export default router;

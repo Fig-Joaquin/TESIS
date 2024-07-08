@@ -7,10 +7,10 @@ const router = Router();
 router.use(authMiddleware);
 
 // Rutas para devoluciones
-router.post('/crear-devolucion', roleMiddleware(['jefe_inventario', 'inventarista']), createDevolucion);
-router.put('/actualizar-devolucion/:id', roleMiddleware(['jefe_inventario', 'inventarista']), updateDevolucion);
-router.get('/devoluciones', roleMiddleware(['jefe_inventario', 'inventarista']), getAllDevoluciones);
-router.get('/devoluciones/:id', roleMiddleware(['jefe_inventario', 'inventarista']), getDevolucionById);
-router.delete('/eliminar-devolucion/:id', roleMiddleware(['jefe_inventario']), deleteDevolucion);
+router.post('/crear-devolucion', roleMiddleware(['gerente', 'jefe_inventarista']), createDevolucion);
+router.put('/actualizar-devolucion/:id', roleMiddleware(['gerente', 'jefe_inventarista']), updateDevolucion);
+router.get('/devoluciones', roleMiddleware(['gerente', 'jefe_inventarista']), getAllDevoluciones);
+router.get('/devoluciones/:id', roleMiddleware(['gerente', 'jefe_inventarista']), getDevolucionById);
+router.delete('/eliminar-devolucion/:id', roleMiddleware(['gerente', 'jefe_inventarista']), deleteDevolucion);
 
 export default router;

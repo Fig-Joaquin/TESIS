@@ -7,12 +7,12 @@ const router = Router();
 router.use(authMiddleware);
 
 // Rutas para pedidos
-router.post('/crear-pedido', roleMiddleware(['jefe_inventario', 'inventarista']), createPedido);
-router.put('/actualizar-pedido/:id', roleMiddleware(['jefe_inventario', 'inventarista']), updatePedido);
-router.get('/pedidos', roleMiddleware(['jefe_inventario', 'inventarista']), getAllPedidos);
-router.get('/pedidos/:id', roleMiddleware(['jefe_inventario', 'inventarista']), getPedidoById);
-router.delete('/eliminar-pedido/:id', roleMiddleware(['jefe_inventario']), deletePedido);
-router.get('/pedidos-por-estado', roleMiddleware(['jefe_inventario', 'inventarista']), getPedidosByStatus);
+router.post('/crear-pedido', roleMiddleware(['gerente', 'jefe_inventarista']), createPedido);
+router.put('/actualizar-pedido/:id', roleMiddleware(['gerente', 'jefe_inventarista']), updatePedido);
+router.get('/pedidos', roleMiddleware(['gerente', 'jefe_inventarista']), getAllPedidos);
+router.get('/pedidos/:id', roleMiddleware(['gerente', 'jefe_inventarista']), getPedidoById);
+router.delete('/eliminar-pedido/:id', roleMiddleware(['gerente', 'jefe_inventarista']), deletePedido);
+router.get('/pedidos-por-estado', roleMiddleware(['gerente', 'jefe_inventarista']), getPedidosByStatus);
 
 export default router;
 
