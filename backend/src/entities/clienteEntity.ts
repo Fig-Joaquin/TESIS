@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Persona } from './personaEntity';
 import { Comuna } from './comunaEntity';
+import { Pedidos } from './pedidos/pedidosEntity';
 
 @Entity('Clientes')
 export class Cliente {
@@ -29,4 +30,7 @@ export class Cliente {
 
   @Column({ default: false })
   Mora: boolean;
+
+  @OneToMany(() => Pedidos, pedido => pedido.Cliente)
+  pedidos: Pedidos[];
 }

@@ -6,6 +6,14 @@ import { Region } from '../entities/regionEntity';
 import { Comuna } from '../entities/comunaEntity';
 import { RolUsuario } from '../entities/rolUsuarioEntity';
 import { Roles } from '../entities/rolesEntity';
+import { Productos } from '../entities/productos/productosEntity';
+import { Bodegas } from '../entities/productos/bodegasEntity';
+import { Categoria } from '../entities/productos/categoriaEntity';
+import { Proveedor } from '../entities/pedidos/proveedorEntity';
+import { Detalle_Pedido } from '../entities/pedidos/detallePedidoEntity';
+import { Registro_Precios } from '../entities/productos/registroPreciosEntity';
+import { Devoluciones } from '../entities/productos/devolucionesEntity';
+import { Pedidos } from '../entities/pedidos/pedidosEntity';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,7 +25,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME ?? 'default_username',
   password: process.env.DB_PASSWORD ?? 'default_password',
   database: process.env.DB_NAME ?? 'default_database',
-  entities: [Usuario, Persona, Cliente, Region, Comuna, RolUsuario, Roles],
+  entities: [Usuario, Persona, Cliente, Region, Comuna, RolUsuario, Roles, Productos, Bodegas, Categoria, Proveedor, Detalle_Pedido, Registro_Precios, Devoluciones, Pedidos],
   synchronize: true,
   logging: false,
   migrations: ['src/migrations/*.ts'],
