@@ -6,6 +6,8 @@ import { Region } from '../entities/regionEntity';
 import { Comuna } from '../entities/comunaEntity';
 import { RolUsuario } from '../entities/rolUsuarioEntity';
 import { Roles } from '../entities/rolesEntity';
+import { Transaccion } from '../entities/transaccionEntity';
+import { Sueldo } from '../entities/sueldoEntity';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,7 +19,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME ?? 'default_username',
   password: process.env.DB_PASSWORD ?? 'default_password',
   database: process.env.DB_NAME ?? 'default_database',
-  entities: [Usuario, Persona, Cliente, Region, Comuna, RolUsuario, Roles],
+  entities: [Usuario, Persona, Cliente, Region, Comuna, RolUsuario, Roles, Transaccion, Sueldo],
   synchronize: true,
   logging: false,
   migrations: ['src/migrations/*.ts'],

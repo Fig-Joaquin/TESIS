@@ -8,8 +8,9 @@ import comunaRoutes from './routes/comunaRoutes';
 import regionRoutes from './routes/regionRoutes';
 import roles from './routes/rolesRoutes';
 import rolUsuario from './routes/rolUsuarioRoutes';
+import transaccion from './routes/transaccionRoutes';
+import sueldo from './routes/sueldoRoutes';
 import { AppDataSource } from './config/data-source';
-
 dotenv.config();
 
 const app = express();
@@ -24,6 +25,8 @@ app.use('/api', comunaRoutes);
 app.use('/api', regionRoutes);
 app.use('/api', roles);
 app.use('/api', rolUsuario);
+app.use('/api', transaccion);
+app.use('/api', sueldo);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
