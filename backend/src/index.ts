@@ -16,8 +16,9 @@ import categoriaRoutes from './routes/productos/categoriaRoutes';
 import devolucionesRoutes from './routes/productos/devolucionesRoutes';
 import productosRoutes from './routes/productos/productosRoutes';
 import registroPreciosRoutes from './routes/productos/registroPreciosRoutes';
+import transaccion from './routes/transaccionRoutes';
+import sueldo from './routes/sueldoRoutes';
 import { AppDataSource } from './config/data-source';
-
 dotenv.config();
 
 const app = express();
@@ -40,6 +41,8 @@ app.use('/api', categoriaRoutes);
 app.use('/api', devolucionesRoutes);
 app.use('/api', productosRoutes);
 app.use('/api', registroPreciosRoutes);
+app.use('/api', transaccion);
+app.use('/api', sueldo);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
