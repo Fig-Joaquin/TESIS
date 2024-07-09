@@ -33,7 +33,7 @@ app.use('/api', regionRoutes);
 app.use('/api', roles);
 app.use('/api', rolUsuario);
 // app.use('/api', detallePedidoRoutes);
-// app.use('/api', pedidosRoutes);
+app.use('/api', pedidosRoutes);
 app.use('/api', proveedorRoutes);
 app.use('/api', bodegasRoutes);
 app.use('/api', categoriaRoutes);

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createPedido, updatePedido, getAllPedidos, getPedidoById, deletePedido, getPedidosByStatus } from '../../controllers/pedidosController';
+import { createPedido, updatePedido, getAllPedidos, getPedidoById, deletePedido/*getPedidosByStatus*/ } from '../../controllers/pedidos/pedidosController';
 import { authMiddleware, roleMiddleware } from '../../middleware/roleMiddleware';
 
 const router = Router();
@@ -12,7 +12,8 @@ router.put('/actualizar-pedido/:id', roleMiddleware(['gerente', 'jefe_inventaris
 router.get('/pedidos', roleMiddleware(['gerente', 'jefe_inventarista']), getAllPedidos);
 router.get('/pedidos/:id', roleMiddleware(['gerente', 'jefe_inventarista']), getPedidoById);
 router.delete('/eliminar-pedido/:id', roleMiddleware(['gerente', 'jefe_inventarista']), deletePedido);
-router.get('/pedidos-por-estado', roleMiddleware(['gerente', 'jefe_inventarista']), getPedidosByStatus);
+//router.get('/pedidos-por-estado', roleMiddleware(['gerente', 'jefe_inventarista']), getPedidosByStatus);
+//Se supone que la finalidad de esta route es una forma de "filtrar por parámetros" según el RF, falta implementar en el controlador
 
 export default router;
 
