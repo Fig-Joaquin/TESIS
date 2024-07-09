@@ -22,15 +22,19 @@ export const productoSchema = z.object({
     .max(500, 'La descripción debe tener menos de 500 caracteres')
     .regex(/^[a-zA-Z0-9-\s]+$/, 'El SKU solo puede contener letras, números, guiones y espacios'),
   Precio_Neto: z.number()
-    .positive('El precio neto debe ser un número positivo'),
+    .int('El precio neto debe ser un número entero')
+    .positive('El precio neto debe ser un número positivo')
+    .min(1, 'El precio neto es obligatorio'),
   Precio_Venta: z.number()
-    .positive('El precio de venta debe ser un número positivo'),
+    .int('El precio de venta debe ser un número entero')
+    .positive('El precio de venta debe ser un número positivo')
+    .min(1, 'El precio de venta es obligatorio'),
   Fecha_Ingreso: z.string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 
         'La fecha de ingreso debe tener el formato YYYY-MM-DD'),
   Unidad_Medida: z.enum(['Kg', 'L']).refine((val) => ['Kg', 'L'].includes(val), { //con .refine se agrega una validación personalizada
     message: 'La unidad de medida debe ser "Kg" o "L"',
-    }),
+  }),
   Stock_Unidades: z.number()
     .int('El stock de unidades debe ser un número entero')
     .min(0, 'Stock_unidades es obligatorio'), //Porque puede ser mayor o igual a 0
@@ -44,7 +48,7 @@ export const productoSchema = z.object({
     .min(1, 'El SKU es obligatorio')
     .max(50, 'El SKU debe tener menos de 50 caracteres')
     .regex(/^[a-zA-Z0-9-]+$/, 'El SKU solo puede contener letras, números y guiones'),
-  descuento: z.number()
+  Descuento: z.number()
     .min(0, 'El descuento no puede ser negativo')
     .max(100, 'El descuento no puede ser mayor a 100')
     .int('El descuento debe ser un número entero')
