@@ -39,7 +39,7 @@ app.use('/api', bodegasRoutes);
 app.use('/api', categoriaRoutes);
 // app.use('/api', devolucionesRoutes);
 app.use('/api', productosRoutes);
-// app.use('/api', registroPreciosRoutes);
+app.use('/api', registroPreciosRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
