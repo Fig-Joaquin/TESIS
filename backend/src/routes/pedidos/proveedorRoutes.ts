@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createProveedor, updateProveedor, getAllProveedores, getProveedorById, deleteProveedor } from '../../controllers/proveedorController';
+import { createProveedor, updateProveedor, getAllProveedores, getProveedorById, deleteProveedor } from '../../controllers/pedidos/proveedorController';
 import { authMiddleware, roleMiddleware } from '../../middleware/roleMiddleware';
 
 const router = Router();

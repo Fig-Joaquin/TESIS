@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createBodega, updateBodega, getAllBodegas, getBodegaById, deleteBodega } from '../../controllers/bodegasController';
+import { createBodega, updateBodega, getAllBodegas, getBodegaById, deleteBodega } from '../../controllers/productos/bodegasController';
 import { authMiddleware, roleMiddleware } from '../../middleware/roleMiddleware';
 
 const router = Router();
