@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createDetallePedido, updateDetallePedido, getAllDetallePedidos, getDetallePedidoById, deleteDetallePedido } from '../../controllers/detallePedidoController';
+import { createDetallePedido, updateDetallePedido, getAllDetallePedidos, getDetallePedidoById, deleteDetallePedido } from '../../controllers/pedidos/detallePedidoController';
 import { authMiddleware, roleMiddleware } from '../../middleware/roleMiddleware';
 
 const router = Router();
