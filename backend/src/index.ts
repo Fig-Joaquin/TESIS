@@ -37,7 +37,7 @@ app.use('/api', pedidosRoutes);
 app.use('/api', proveedorRoutes);
 app.use('/api', bodegasRoutes);
 app.use('/api', categoriaRoutes);
-// app.use('/api', devolucionesRoutes);
+app.use('/api', devolucionesRoutes);
 app.use('/api', productosRoutes);
 app.use('/api', registroPreciosRoutes);
 

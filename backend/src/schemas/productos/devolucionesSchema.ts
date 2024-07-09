@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const devolucionSchema = z.object({
+export const devolucionesSchema = z.object({
   ID_Productos: z.number()
     .int('ID_Productos debe ser un número entero')
     .positive('ID_Productos debe ser un número positivo')
@@ -22,4 +22,4 @@ export const devolucionSchema = z.object({
     .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'La razon solo puede contener letras y espacios'),
 });
 
-export type DevolucionSchema = z.infer<typeof devolucionSchema>;
+export type DevolucionSchema = z.infer<typeof devolucionesSchema>;

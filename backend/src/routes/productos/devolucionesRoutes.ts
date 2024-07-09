@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createDevolucion, updateDevolucion, getAllDevoluciones, getDevolucionById, deleteDevolucion } from '../../controllers/devolucionesController';
+import { createDevolucion, updateDevolucion, getAllDevoluciones, getDevolucionById, deleteDevolucion } from '../../controllers/productos/devolucionesController';
 import { authMiddleware, roleMiddleware } from '../../middleware/roleMiddleware';
 
 const router = Router();

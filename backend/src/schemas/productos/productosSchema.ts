@@ -20,7 +20,7 @@ export const productoSchema = z.object({
   Descripcion: z.string()
     .min(1, 'La descripción es obligatoria')
     .max(500, 'La descripción debe tener menos de 500 caracteres')
-    .regex(/^[a-zA-Z0-9-\s]+$/, 'El SKU solo puede contener letras, números, guiones y espacios'),
+    .regex(/^[a-zA-Z0-9-\s]+$/, 'La descripcion solo puede contener letras, números, guiones y espacios'),
   Precio_Neto: z.number()
     .int('El precio neto debe ser un número entero')
     .positive('El precio neto debe ser un número positivo')
