@@ -34,13 +34,9 @@ app.use('/api', roles);
 app.use('/api', rolUsuario);
 // app.use('/api', detallePedidoRoutes);
 // app.use('/api', pedidosRoutes);
-<<<<<<< HEAD
 app.use('/api', proveedorRoutes);
-=======
-// app.use('/api', proveedorRoutes);
->>>>>>> d18ecbcd4213b37531d273116f3d001e6587d615
 app.use('/api', bodegasRoutes);
-// app.use('/api', categoriaRoutes);
+app.use('/api', categoriaRoutes);
 // app.use('/api', devolucionesRoutes);
 // app.use('/api', productosRoutes);
 // app.use('/api', registroPreciosRoutes);

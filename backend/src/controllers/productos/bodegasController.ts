@@ -5,17 +5,10 @@ import { bodegaSchema } from '../../schemas/productos/bodegasSchema';
 import { ZodValidatorAdapter } from '../../plugins/zod-validator-plugin';
 import logger from '../../utils/logger';
 
-<<<<<<< HEAD
 // Instancia del adaptador de validación
 const validator = new ZodValidatorAdapter(bodegaSchema);
 
 // ---------------- Crear una bodega ----------------
-=======
-// Crear una instancia del adaptador de validación
-const validator = new ZodValidatorAdapter(bodegaSchema);
-
-// * Crear una bodega
->>>>>>> d18ecbcd4213b37531d273116f3d001e6587d615
 export const createBodega = async (req: Request, res: Response) => {
   const validationResult = validator.validateAndSanitize(req.body);
   if (validationResult && validationResult.errors) {
@@ -41,11 +34,7 @@ export const createBodega = async (req: Request, res: Response) => {
   }
 };
 
-<<<<<<< HEAD
 // ---------------- Obtener todas las bodegas ----------------
-=======
-// * Obtener todas las bodegas
->>>>>>> d18ecbcd4213b37531d273116f3d001e6587d615
 export const getAllBodegas = async (req: Request, res: Response) => {
   try {
     const bodegaRepository = AppDataSource.getRepository(Bodegas);
@@ -61,11 +50,7 @@ export const getAllBodegas = async (req: Request, res: Response) => {
   }
 };
 
-<<<<<<< HEAD
 // ---------------- Obtener una bodega por ID ----------------
-=======
-// * Obtener una bodega por ID
->>>>>>> d18ecbcd4213b37531d273116f3d001e6587d615
 export const getBodegaById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -89,11 +74,7 @@ export const getBodegaById = async (req: Request, res: Response) => {
   }
 };
 
-<<<<<<< HEAD
 // ---------------- Actualizar una bodega ----------------
-=======
-// * Actualizar una bodega
->>>>>>> d18ecbcd4213b37531d273116f3d001e6587d615
 export const updateBodega = async (req: Request, res: Response) => {
   const { id } = req.params;
   const validationResult = validator.validateAndSanitize(req.body);
@@ -131,11 +112,7 @@ export const updateBodega = async (req: Request, res: Response) => {
   }
 };
 
-<<<<<<< HEAD
 // ---------------- Eliminar una bodega ----------------
-=======
-// * Eliminar una bodega
->>>>>>> d18ecbcd4213b37531d273116f3d001e6587d615
 export const deleteBodega = async (req: Request, res: Response) => {
   const { id } = req.params;
 
