@@ -20,27 +20,17 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+
 export const AppDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST ?? 'localhost',
   port: parseInt(process.env.DB_PORT ?? '5432', 10),
   username: process.env.DB_USERNAME ?? 'default_username',
   password: process.env.DB_PASSWORD ?? 'default_password',
-  database: process.env.DB_NAME ?? 'default_database',
+  database: process.env.DB_DATABASE ?? 'default_database',
   entities: [Usuario, Persona, Cliente, Region, Comuna, RolUsuario, Roles, Productos, Bodegas, Categoria, Proveedor, Detalle_Pedido, Registro_Precios, Devoluciones, Pedidos, Transaccion, Sueldo],
   synchronize: true,
   logging: false,
   migrations: ['src/migrations/*.ts'],
   subscribers: [],
 });
-
-AppDataSource.initialize()
-  .then(async () => {
-    console.log('Data Source has been initialized!');
-
-    const queryRunner = AppDataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.query('CREATE EXTENSION IF NOT EXISTS unaccent');
-    await queryRunner.release();
-  })
-  .catch((error) => console.log('Error during Data Source initialization:', error));

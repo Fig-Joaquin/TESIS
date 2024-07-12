@@ -13,6 +13,6 @@
     "resolveJsonModule": true,
     "lib": ["ES2022"]
   },
-  "include": ["src", "test-bd.ts"],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }
