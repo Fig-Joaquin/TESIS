@@ -46,6 +46,7 @@ export const personaSchemaRegistro = z.object({
     .optional(),  // Segundo apellido es opcional
   Email: z.string()
     .email('Email inválido')
+    .min(6, 'El email introducido debe tener más de 6 caracteres')
     .max(100, 'El email debe tener menos de 100 caracteres')
     .optional()
     .transform((email) => email ? email.toLowerCase() : email),  // Email es opcional
