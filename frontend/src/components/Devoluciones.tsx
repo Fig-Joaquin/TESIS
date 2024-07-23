@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../axiosConfig';
 
 const Devoluciones = () => {
   const [devoluciones, setDevoluciones] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDevoluciones = async () => {
@@ -22,9 +24,15 @@ const Devoluciones = () => {
     fetchDevoluciones();
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/signin');
+  };
+
   return (
     <div>
       <h1>Devoluciones</h1>
+      <button onClick={handleLogout}>Logout</button>
       <ul>
         {devoluciones.map((devolucion) => (
           <li key={devolucion.ID_Devolucion}>

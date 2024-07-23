@@ -5,8 +5,8 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import Checkbox from '@mui/material/Checkbox';
 //import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -32,7 +32,7 @@ import api from '../axiosConfig';
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const [email, setEmail] = useState('');
+  const [rut, setrut] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
@@ -40,11 +40,11 @@ export default function SignInSide() {
     event.preventDefault();
     try {
       const response = await api.post('/auth/login', {
-        Rut_Persona: email,
+        Rut_Persona: rut,
         Contrasenia: password,
       });
       localStorage.setItem('token', response.data.token);
-      navigate('/devoluciones');
+      navigate('/Dashboard');
     } catch (error) {
       console.error('Error en la autenticación:', error);
     }
@@ -83,20 +83,20 @@ export default function SignInSide() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Inicio de sesión
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="rut"
+                label="Rut"
+                name="rut"
+                autoComplete="rut"
                 autoFocus
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={rut}
+                onChange={(e) => setrut(e.target.value)}
               />
               <TextField
                 margin="normal"
@@ -110,17 +110,17 @@ export default function SignInSide() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
-              />
+              /> */}
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Iniciar sesión
               </Button>
               {/* <Grid container>
                 <Grid item xs>
