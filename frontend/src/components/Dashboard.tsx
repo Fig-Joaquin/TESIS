@@ -1,29 +1,42 @@
+import { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import PedidosSummary from './Pedidos/PedidosSummary';
 import Chart from './Ejemplos/Chart';
 import Deposits from './Ejemplos/Deposits';
-
-// function Copyright(props: any) {
-//   return (
-//     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-//       {'Copyright © '}
-//       <Link color="inherit" href="https://mui.com/">
-//         Your Website
-//       </Link>{' '}
-//       {new Date().getFullYear()}
-//       {'.'}
-//     </Typography>
-//   );
-// }
+import { getPedidos, deletePedido } from '../services/pedidoService.ts';
 
 const Dashboard = () => {
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    const fetchPedidos = async () => {
+      try {
+        const data = await getPedidos();
+        setRows(data);
+      } catch (error) {
+        console.error('Error al obtener los pedidos:', error);
+      }
+    };
+
+    fetchPedidos();
+  }, []);
+
+  const handleDeletePedido = async (id) => {
+    try {
+      await deletePedido(id);
+      setRows((prevRows) => prevRows.filter((row) => row.ID_Pedido !== id));
+    } catch (error) {
+      console.error('Error al eliminar el pedido:', error);
+    }
+  };
+
   return (
     <Grid container spacing={3}>
       {/* Recent Pedidos */}
       <Grid item xs={12}>
         <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-          <PedidosSummary />
+          <PedidosSummary rows={rows} onDelete={handleDeletePedido} />
         </Paper>
       </Grid>
       {/* Chart */}
