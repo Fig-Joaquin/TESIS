@@ -16,6 +16,9 @@ import { Devoluciones } from '../entities/productos/devolucionesEntity';
 import { Pedidos } from '../entities/pedidos/pedidosEntity';
 import { Transaccion } from '../entities/transaccionEntity';
 import { Sueldo } from '../entities/sueldoEntity';
+import { Gasto } from '../entities/gastoEntity';
+import { CategoriaGasto } from '../entities/categoriaGastoEntity';
+
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -28,7 +31,10 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME ?? 'default_username',
   password: process.env.DB_PASSWORD ?? 'default_password',
   database: process.env.DB_DATABASE ?? 'default_database',
-  entities: [Usuario, Persona, Cliente, Region, Comuna, RolUsuario, Roles, Productos, Bodegas, Categoria, Proveedor, Detalle_Pedido, Registro_Precios, Devoluciones, Pedidos, Transaccion, Sueldo],
+  entities: [Usuario, Persona, Cliente, Region, Comuna, RolUsuario, 
+    Roles, Productos, Bodegas, Categoria, Proveedor, Detalle_Pedido, 
+    Registro_Precios, Devoluciones, Pedidos, Transaccion, Sueldo, Gasto,
+    CategoriaGasto],
   synchronize: true,
   logging: false,
   migrations: ['src/migrations/*.ts'],

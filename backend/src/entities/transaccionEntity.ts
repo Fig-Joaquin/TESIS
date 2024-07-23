@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {Gasto} from './gastoEntity';
 
 export enum TipoTransaccion {
   INGRESO = 'Ingreso',
@@ -19,6 +20,9 @@ export class Transaccion {
   })
   Tipo: TipoTransaccion;
 
+  @OneToMany(() => Gasto, gasto => gasto.Transaccion)
+  Gastos: Gasto[];
+  
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   Monto: number;
 
