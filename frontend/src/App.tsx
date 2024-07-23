@@ -11,6 +11,7 @@ function App() {
         <Route path="/signin" element={<SignInSide />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/pedidos" element={<Dashboard />} />
         </Route>
         <Route path="/" element={<SignInSide />} />
       </Routes>

@@ -8,6 +8,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import Badge from '@mui/material/Badge';
 
 export const mainListItems = (
   <React.Fragment>
@@ -19,7 +20,9 @@ export const mainListItems = (
     </ListItemButton>
     <ListItemButton>
       <ListItemIcon>
-        <LocalShippingIcon />
+        <Badge badgeContent={4} color="secondary">
+          <LocalShippingIcon />
+        </Badge>
       </ListItemIcon>
       <ListItemText primary="Pedidos" />
     </ListItemButton>

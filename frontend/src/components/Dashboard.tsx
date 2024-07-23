@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { mainListItems, secondaryListItems } from './listItems';
 import Chart from './Chart';
 import Deposits from './Deposits.tsx';
-import Orders from './Orders.tsx';
+import Pedidos from './Pedidos.tsx';
 
 // function Copyright(props: any) {
 //   return (
@@ -173,10 +173,10 @@ export default function Dashboard() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/* Recent Orders */}
+              {/* Recent Pedidos */}
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Orders />
+                  <Pedidos />
                 </Paper>
               </Grid>
               {/* Chart */}
