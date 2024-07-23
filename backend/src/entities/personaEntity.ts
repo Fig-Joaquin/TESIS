@@ -32,9 +32,6 @@ export class Persona {
   @OneToMany(() => Cliente, cliente => cliente.Persona)
   Clientes: Cliente[];
 
-  @OneToMany(() => Sueldo, sueldo => sueldo.ID_Persona)
-  Sueldos: Sueldo[];
-
   @BeforeInsert()
   @BeforeUpdate()
   formatFields() {

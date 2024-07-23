@@ -26,7 +26,4 @@ export class Sueldo {
   @Column({ type: 'text', nullable: true })
   Descripcion: string;
 
-  @ManyToOne(() => Persona, persona => persona.Sueldos)
-  @JoinColumn({ name: 'ID_Persona' })
-  ID_Persona: Persona;
 }

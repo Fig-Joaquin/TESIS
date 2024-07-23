@@ -17,7 +17,6 @@ const montoSchema = z.number().positive().describe("Monto de la transacción. De
 
 const tipoSueldoSchema = z.nativeEnum(TipoSueldo).describe("Tipo de sueldo, puede ser 'semanal', 'mensual' o 'quincena'.");
 const descripcionSchema = z.string().max(255, "La descripción no puede exceder 255 caracteres").nullable().describe("Descripción opcional del sueldo. Puede contener hasta 255 caracteres.");
-const personaIdSchema = z.number().int().positive().describe("ID de la persona asociada al sueldo. Debe ser un número entero positivo.");
 
 export const sueldoSchemaRegistro = z.object({
   Fecha: fechaSchema,
@@ -26,7 +25,6 @@ export const sueldoSchemaRegistro = z.object({
   DescripcionTransaccion: descripcionSchema,
   Tipo_Sueldo: tipoSueldoSchema,
   Descripcion: descripcionSchema,
-  ID_Persona: personaIdSchema
 }).describe("Esquema de validación para el registro de un nuevo sueldo. Todos los campos son obligatorios excepto la descripción, que es opcional.");
 
 export const sueldoSchemaActualizacion = sueldoSchemaRegistro.partial().describe("Esquema de validación para la actualización parcial de un sueldo. Todos los campos son opcionales.");

@@ -36,7 +36,6 @@ export const createSueldo = async (req: Request, res: Response): Promise<Respons
       ID_Transaccion: nuevaTransaccion,
       Tipo_Sueldo,
       Descripcion,
-      ID_Persona
     });
     await sueldoRepository.save(nuevoSueldo);
 
@@ -68,8 +67,6 @@ export const updateSueldo = async (req: Request, res: Response): Promise<Respons
     if (validationResult.data.ID_Transaccion !== undefined) sueldo.ID_Transaccion = validationResult.data.ID_Transaccion;
     if (validationResult.data.Tipo_Sueldo !== undefined) sueldo.Tipo_Sueldo = validationResult.data.Tipo_Sueldo;
     if (validationResult.data.Descripcion !== undefined) sueldo.Descripcion = validationResult.data.Descripcion;
-    if (validationResult.data.ID_Persona !== undefined) sueldo.ID_Persona = validationResult.data.ID_Persona;
-
     await sueldoRepository.save(sueldo);
     logger.info('Sueldo actualizado: %o', sueldo);
     return res.status(200).json(sueldo);
