@@ -1,15 +1,12 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import axios from '../axiosConfig.ts'; // Asegúrate de que la ruta sea correcta
-import Link from '@mui/material/Link';
+import React, { useState, useEffect } from 'react';
+import axios from '../../axiosConfig'; // Asegúrate de que la ruta sea correcta
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Title from './Title.tsx';
 
-export default function Pedidos() {
+export default function PedidosSummary() {
   const [rows, setRows] = useState([]);
   const [error, setError] = useState(null);
 
@@ -22,10 +19,8 @@ export default function Pedidos() {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log('Datos recibidos:', response.data); // Log para verificar los datos recibidos
         setRows(response.data);
       } catch (error) {
-        console.error('Error al obtener los datos:', error); // Log para errores
         setError(error);
       }
     };
@@ -39,7 +34,6 @@ export default function Pedidos() {
 
   return (
     <React.Fragment>
-      <Title>Pedidos recientes</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -51,7 +45,7 @@ export default function Pedidos() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows.slice(0, 5).map((row) => (
             <TableRow key={row.ID_Pedido}>
               <TableCell>{row.Tipo_Pedido}</TableCell>
               <TableCell>{new Date(row.Fecha_Pedido).toLocaleDateString()}</TableCell>
@@ -62,9 +56,6 @@ export default function Pedidos() {
           ))}
         </TableBody>
       </Table>
-      <Link color="primary" href="#" onClick={(event) => event.preventDefault()} sx={{ mt: 3 }}>
-        Ver más Pedidos
-      </Link>
     </React.Fragment>
   );
 }
