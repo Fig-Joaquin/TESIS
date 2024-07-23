@@ -108,7 +108,7 @@ export const getAllSueldos = async (req: Request, res: Response): Promise<Respon
   }
 };
 
-// Función para filtrar sueldos por tipo y periodo
+// Función para filtrar sueldos por tipo y periodo // * Hay que arreglar
 export const getSueldosByTipo = async (req: Request, res: Response): Promise<Response> => {
   const { tipo, periodo } = req.query;
 console.log(tipo,periodo);

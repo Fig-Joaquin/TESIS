@@ -1,9 +1,38 @@
 import { z } from 'zod';
+import { TipoTransaccion } from '../entities/transaccionEntity';
 
-export const gastoSchema = z.object({
-  ID_Transaccion: z.number().int().positive('El ID de la transacción debe ser un número positivo'),
-  Nombre_Gasto: z.string().min(1, 'El nombre del gasto es obligatorio').max(100, 'El nombre no puede exceder 100 caracteres'),
-  ID_Categoria_Gasto: z.number().int().positive('El ID de la categoría del gasto debe ser un número positivo')
+export const transaccionSchema = z.object({
+  Fecha: z.string().refine((val) => {
+    const regex = /^(\d{2})-(\d{2})-(\d{4})$/;
+    if (!regex.test(val)) return false;
+    const [day, month, year] = val.split('-').map(Number);
+    const date = new Date(`${year}-${month}-${day}`);
+    return !isNaN(date.getTime()) && date.getDate() === day && date.getMonth() + 1 === month && date.getFullYear() === year;
+  }, {
+    message: 'Fecha inválida. Debe ser una fecha válida en formato dd-mm-yyyy.'
+  }),
+  Tipo: z.nativeEnum(TipoTransaccion),
+  Monto: z.number().positive('El monto debe ser positivo').refine((val) => Number.isFinite(val), {
+    message: 'El monto debe ser un número finito.'
+  }),
+  Descripcion: z.string()
+  .max(255, 'La descripción no puede exceder 255 caracteres')
 });
 
-export type GastoSchema = z.infer<typeof gastoSchema>;
+export const gastoSchema = z.object({
+  Nombre_Gasto: z.string()
+    .min(1, 'El nombre del gasto es obligatorio')
+    .max(100, 'El nombre del gasto debe tener menos de 100 caracteres'),
+  ID_Categoria_Gasto: z.number().positive('El ID de la categoría de gasto debe ser positivo')
+});
+
+export const gastoConTransaccionSchema = z.object({
+  Fecha: transaccionSchema.shape.Fecha,
+  Tipo: transaccionSchema.shape.Tipo,
+  Monto: transaccionSchema.shape.Monto,
+  Descripcion: transaccionSchema.shape.Descripcion,
+  Nombre_Gasto: gastoSchema.shape.Nombre_Gasto,
+  ID_Categoria_Gasto: gastoSchema.shape.ID_Categoria_Gasto
+});
+
+export type GastoConTransaccionSchema = z.infer<typeof gastoConTransaccionSchema>;
