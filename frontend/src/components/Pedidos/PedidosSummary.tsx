@@ -12,12 +12,23 @@ export default function PedidosSummary({ rows, onDelete }) {
     return <div>Error: Datos de los pedidos inválidos</div>;
   }
 
+  const getEstadoColor = (estado) => {
+    switch (estado) {
+      case 'entregado':
+        return '#228B22'; // Verde oscuro
+      case 'pendiente':
+        return '#FFD700'; // Amarillo oscuro
+      case 'sin entregar':
+        return '#B22222'; // Rojo oscuro
+      default:
+        return '#000000'; // Negro por defecto
+    }
+  };
+
   return (
     <Table size="small">
       <TableHead>
         <TableRow>
-          <TableCell>ID Cliente</TableCell>
-          <TableCell>ID Proveedor</TableCell>
           <TableCell>Tipo Pedido</TableCell>
           <TableCell>Fecha Pedido</TableCell>
           <TableCell>Fecha Entrega</TableCell>
@@ -29,13 +40,11 @@ export default function PedidosSummary({ rows, onDelete }) {
       <TableBody>
         {rows.map((row) => (
           <TableRow key={row.ID_Pedido}>
-            <TableCell>{row.ID_Cliente}</TableCell>
-            <TableCell>{row.ID_Proveedor}</TableCell>
             <TableCell>{row.Tipo_Pedido}</TableCell>
             <TableCell>{new Date(row.Fecha_Pedido).toLocaleDateString()}</TableCell>
             <TableCell>{new Date(row.Fecha_Entrega).toLocaleDateString()}</TableCell>
             <TableCell>{row.Comentarios}</TableCell>
-            <TableCell>{row.Estado}</TableCell>
+            <TableCell style={{ color: getEstadoColor(row.Estado) }}>{row.Estado}</TableCell>
             <TableCell>
               <Button
                 variant="contained"

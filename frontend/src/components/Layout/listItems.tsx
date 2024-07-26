@@ -24,7 +24,7 @@ export function MainListItems(){
       </ListItemButton>
       <ListItemButton onClick={() => navigate('/pedidos')}>
         <ListItemIcon>
-          <Badge badgeContent={4} color="secondary">
+          <Badge badgeContent={3} color="secondary">
             <LocalShippingIcon />
           </Badge>
         </ListItemIcon>

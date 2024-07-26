@@ -14,6 +14,7 @@ export default function Pedidos() {
   const [filteredRows, setFilteredRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [open, setOpen] = useState(false);
+  const [reload, setReload] = useState(false)
 
   useEffect(() => {
     const fetchPedidos = async () => {
@@ -27,13 +28,13 @@ export default function Pedidos() {
     };
 
     fetchPedidos();
-  }, []);
+  }, [reload]);
+
 
   const handleAddPedido = async (newPedido) => {
     try {
       const addedPedido = await addPedido(newPedido);
-      setRows((prevRows) => [...prevRows, addedPedido]);
-      setFilteredRows((prevRows) => [...prevRows, addedPedido]);
+      setTimeout(() => setReload(!reload), 100);
     } catch (error) {
       console.error('Error al agregar el pedido:', error);
       if (error.response) {
@@ -66,7 +67,7 @@ export default function Pedidos() {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Toolbar sx={{ mb: 2 }}>
         <TextField
-          label="Buscar por ID"
+          label="Buscar Pedido"
           variant="outlined"
           value={searchTerm}
           onChange={handleSearch}
