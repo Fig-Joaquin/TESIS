@@ -11,6 +11,8 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./backup:/docker-entrypoint-initdb.d # Volumen para inicializar la base de datos
+
 
   app:
     build: .
