@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const clienteSchema = z.object({
   Direccion: z.string()
     .min(5, { message: "La dirección debe tener al menos 5 caracteres" })
-    .max(120, { message: "La dirección no debe exceder los 255 caracteres" })
+    .max(120, { message: "La dirección no debe exceder los 120 caracteres" })
     .refine(value => value !== undefined && value !== null,{ message: "La dirección es obligatoria" }),
   
   Nombre_Local: z.string()

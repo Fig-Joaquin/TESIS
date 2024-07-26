@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { Usuario } from './usuarioEntity';
 import { Cliente } from './clienteEntity';
-import { Sueldo } from './sueldoEntity';
 
 @Entity('Personas')
 export class Persona {
@@ -38,7 +37,7 @@ export class Persona {
     // Convertir Rut_Persona y Email a minúsculas
     this.Rut_Persona = this.Rut_Persona.toLowerCase();
 
-    if(!this.Email == undefined || null)
+    if(this.Email !== undefined || this.Email !== null)
       this.Email = this.Email.toLowerCase();
     
     // Asegurar que el Rut_Persona termine con 'k' minúscula si es necesario

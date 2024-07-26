@@ -70,6 +70,100 @@ export const createPersonaCliente = async (req: Request, res: Response) => {
   }
 };
 
+// //* Crear cliente dada a que existe una persona en la base de datos
+// export const createClienteWithExistingPersona = async (req: Request, res: Response) => {
+//   const clienteAdapter = new ZodValidatorAdapter(clienteSchema);
+
+//   // Validar datos del cliente
+//   const parseClienteResult = clienteAdapter.validateAndSanitize(req.body.cliente);
+
+//   if (!parseClienteResult.success) {
+//     return res.status(400).json({ message: 'Invalid input for cliente', errors: parseClienteResult.errors });
+//   }
+
+//   const { ID_Persona, Direccion, Nombre_Local, Razon_Social, Giro, ID_Comuna } = parseClienteResult.data;
+
+//   try {
+//     const personaRepository = AppDataSource.getRepository(Persona);
+//     const clienteRepository = AppDataSource.getRepository(Cliente);
+//     const comunaRepository = AppDataSource.getRepository(Comuna);
+
+//     // Verificar si la persona existe
+//     const existingPersona = await personaRepository.findOne({ where: { ID_Persona } });
+//     if (!existingPersona) {
+//       return res.status(404).json({ message: 'Persona not found' });
+//     }
+
+//     // Verificar si ya existe un cliente con la misma persona
+//     const existingCliente = await clienteRepository.findOne({
+//       where: { Persona: existingPersona }
+//     });
+//     if (existingCliente) {
+//       return res.status(409).json({ message: 'Cliente already exists for this persona' });
+//     }
+
+//     // Verificar si la comuna existe
+//     const existingComuna = await comunaRepository.findOne({ where: { ID_Comuna } });
+//     if (!existingComuna) {
+//       return res.status(404).json({ message: 'Comuna not found' });
+//     }
+
+//     // Crear y guardar el nuevo cliente
+//     const newCliente = clienteRepository.create({
+//       Persona: existingPersona, // Asociar correctamente la persona
+//       Comuna: existingComuna,
+//       Direccion,
+//       Nombre_Local,
+//       Razon_Social,
+//       Giro,
+//       Mora: false
+//     });
+//     await clienteRepository.save(newCliente);
+
+//     res.status(201).json({ cliente: newCliente });
+//   } catch (err) {
+//     logger.error('Error creating Cliente with existing Persona: %o', err);
+//     if (err instanceof Error) {
+//       res.status(500).json({ message: err.message });
+//     } else {
+//       res.status(500).json({ message: 'An unknown error occurred' });
+//     }
+//   }
+// };
+
+
+
+//* Eliminar un cliente
+export const deleteClienteById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id) {
+    logger.error('ID is missing from the request parameters');
+    return res.status(400).json({ message: 'ID is required' });
+  }
+
+  try {
+    const clienteRepository = AppDataSource.getRepository(Cliente);
+    const cliente = await clienteRepository.findOne({ where: { ID_Cliente: Number(id) } });
+
+    if (!cliente) {
+      logger.warn('Cliente not found for ID: %s', id);
+      return res.status(404).json({ message: 'Cliente not found' });
+    }
+
+    await clienteRepository.remove(cliente);
+
+    res.status(200).json({ message: 'Cliente deleted successfully' });
+  } catch (err) {
+    logger.error('Error deleting Cliente by ID: %o', err);
+    if (err instanceof Error) {
+      res.status(500).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: 'An unknown error occurred' });
+    }
+  }
+};
+
 // * Obtener todos los clientes
 export const getClientes = async (req: Request, res: Response) => {
   try {
@@ -86,8 +180,6 @@ export const getClientes = async (req: Request, res: Response) => {
     }
   }
 };
-
-
 
 export const filterClientes = async (req: Request, res: Response) => {
   const { Direccion, Nombre_Local, Razon_Social, Giro, Mora, ID_Comuna } = req.query;
@@ -129,8 +221,6 @@ export const filterClientes = async (req: Request, res: Response) => {
   }
 };
 
-
-
 // * Obtener un cliente por su RUT
 export const getClienteByRut = async (req: Request, res: Response) => {
   const { rut } = req.params;
@@ -162,7 +252,6 @@ export const getClienteByRut = async (req: Request, res: Response) => {
     }
   }
 };
-
 
 // * Obtener un cliente por su ID
 export const getClienteById = async (req: Request, res: Response) => {
@@ -196,34 +285,40 @@ export const getClienteById = async (req: Request, res: Response) => {
   }
 };
 
-
+//* Actualizar cliente
 export const updateClienteByRut = async (req: Request, res: Response) => {
-  const { Rut } = req.params;
-  const clienteAdapter = new ZodValidatorAdapter(clienteSchema);
+  const { rut } = req.params;
+
+  const partialClienteSchema = clienteSchema.partial(); // Allow partial updates
+  const clienteAdapter = new ZodValidatorAdapter(partialClienteSchema);
 
   const parseClienteResult = clienteAdapter.validateAndSanitize(req.body);
-  if (!parseClienteResult || parseClienteResult.errors) {
-    return res.status(400).json({ message: 'Invalid input for cliente', errors: parseClienteResult?.errors });
+  if (!parseClienteResult.success) {
+    return res.status(400).json({ message: 'Invalid input for cliente', errors: parseClienteResult.errors });
   }
 
   const { Direccion, Nombre_Local, Razon_Social, Giro, Mora, ID_Comuna } = parseClienteResult.data;
 
   try {
     const clienteRepository = AppDataSource.getRepository(Cliente);
-    const cliente = await clienteRepository.findOne({ where: { Persona: { Rut_Persona: Rut } } });
+    const comunaRepository = AppDataSource.getRepository(Comuna);
+
+    const cliente = await clienteRepository.findOne({
+      where: { Persona: { Rut_Persona: rut } },
+      relations: ["Comuna", "Persona"]
+    });
 
     if (!cliente) {
       return res.status(404).json({ message: 'Cliente not found' });
     }
 
-    if (Direccion) cliente.Direccion = Direccion;
-    if (Nombre_Local) cliente.Nombre_Local = Nombre_Local;
-    if (Razon_Social) cliente.Razon_Social = Razon_Social;
-    if (Giro) cliente.Giro = Giro;
+    if (Direccion !== undefined) cliente.Direccion = Direccion;
+    if (Nombre_Local !== undefined) cliente.Nombre_Local = Nombre_Local;
+    if (Razon_Social !== undefined) cliente.Razon_Social = Razon_Social;
+    if (Giro !== undefined) cliente.Giro = Giro;
     if (Mora !== undefined) cliente.Mora = Mora;
 
-    if (ID_Comuna) {
-      const comunaRepository = AppDataSource.getRepository(Comuna);
+    if (ID_Comuna !== undefined) {
       const existingComuna = await comunaRepository.findOne({ where: { ID_Comuna } });
       if (!existingComuna) {
         return res.status(404).json({ message: 'Comuna not found' });
@@ -243,4 +338,3 @@ export const updateClienteByRut = async (req: Request, res: Response) => {
     }
   }
 };
-
