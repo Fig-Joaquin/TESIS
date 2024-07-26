@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Transaccion } from './transaccionEntity';
-import { Persona } from './personaEntity';
 
 export enum TipoSueldo {
   SEMANAL = 'semanal',

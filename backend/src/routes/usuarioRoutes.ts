@@ -8,11 +8,10 @@ router.use(authMiddleware);
 
 // Rutas para usuarios
 router.post('/crear-usuario', roleMiddleware(['gerente']), createUsuario); // Checked
-router.put('/cambiar-password/:id', roleMiddleware(['gerente', 'jefe_administrativo', 'administrativo', 'jefe_inventarista', 'inventarista']),
-    updateUsuario); //! NO CHECKED
+router.put('/cambiar-password/:id', roleMiddleware(['gerente']),updateUsuario); //! NO CHECKED
 router.get('/usuarios', roleMiddleware(['gerente']), getAllUsuarios); // Checked 
 router.get('/usuarios/:id', roleMiddleware(['gerente']), getUsuarioById); // Checked 
 router.delete('/usuarios/:id', roleMiddleware(['gerente']), deleteUsuario); //! NO CHECKED
-router.post('/usuarios/reset-password', roleMiddleware(['gerente', 'jefe_administrativo']), resetUsuarioPassword);  //! NO CHECKED
+router.post('/usuarios/reset-password', roleMiddleware(['gerente']), resetUsuarioPassword);  //! NO CHECKED
 
 export default router;

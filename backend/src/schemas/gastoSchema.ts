@@ -34,5 +34,15 @@ export const gastoConTransaccionSchema = z.object({
   Nombre_Gasto: gastoSchema.shape.Nombre_Gasto,
   ID_Categoria_Gasto: gastoSchema.shape.ID_Categoria_Gasto
 });
+export const gastoSchemaActualizacion = z.object({
+  Nombre_Gasto: gastoSchema.shape.Nombre_Gasto.optional(),
+  ID_Categoria_Gasto: gastoSchema.shape.ID_Categoria_Gasto.optional(),
+  Fecha: transaccionSchema.shape.Fecha.optional(),
+  Tipo: transaccionSchema.shape.Tipo.optional(),
+  Monto: transaccionSchema.shape.Monto.optional(),
+  Descripcion: transaccionSchema.shape.Descripcion.optional()
+}).describe("Esquema de validación para la actualización parcial de un gasto.");
+
 
 export type GastoConTransaccionSchema = z.infer<typeof gastoConTransaccionSchema>;
+

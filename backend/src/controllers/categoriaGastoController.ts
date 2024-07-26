@@ -44,3 +44,65 @@ export const getAllCategoriasGasto = async (req: Request, res: Response) => {
         }
     }  
 };
+// Función para actualizar una categoría de gasto
+export const updateCategoriaGasto = async (req: Request, res: Response) => {
+    const { id } = req.params;
+  
+    const adapter = new ZodValidatorAdapter(categoriaGastoSchema);
+    const validationResult = adapter.validateAndSanitize(req.body);
+  
+    if (validationResult.errors) {
+      logger.error('Invalid input for updateCategoriaGasto: %o', validationResult.errors);
+      return res.status(400).json({ message: 'Invalid input', errors: validationResult.errors });
+    }
+  
+    try {
+      const categoriaGastoRepository = AppDataSource.getRepository(CategoriaGasto);
+  
+      const categoriaGasto = await categoriaGastoRepository.findOne({ where: { ID_Categoria_Gasto: Number(id) } });
+  
+      if (!categoriaGasto) {
+        return res.status(404).json({ message: 'Categoría de gasto no encontrada' });
+      }
+  
+      categoriaGasto.Nombre = validationResult.data.Nombre;
+  
+      await categoriaGastoRepository.save(categoriaGasto);
+  
+      logger.info('Categoría de gasto actualizada: %o', categoriaGasto);
+      return res.status(200).json(categoriaGasto);
+    } catch (err) {
+      logger.error('Error al actualizar la categoría de gasto: %o', err);
+      if (err instanceof Error) {
+        return res.status(500).json({ message: err.message });
+      } else {
+        return res.status(500).json({ message: 'An unknown error occurred' });
+      }
+    }
+  };
+// Función para eliminar una categoría de gasto
+export const deleteCategoriaGasto = async (req: Request, res: Response) => {
+    const { id } = req.params;
+  
+    try {
+      const categoriaGastoRepository = AppDataSource.getRepository(CategoriaGasto);
+  
+      const categoriaGasto = await categoriaGastoRepository.findOne({ where: { ID_Categoria_Gasto: Number(id) } });
+  
+      if (!categoriaGasto) {
+        return res.status(404).json({ message: 'Categoría de gasto no encontrada' });
+      }
+  
+      await categoriaGastoRepository.remove(categoriaGasto);
+  
+      logger.info('Categoría de gasto eliminada: %o', categoriaGasto);
+      return res.status(200).json({ message: 'Categoría de gasto eliminada exitosamente' });
+    } catch (err) {
+      logger.error('Error al eliminar la categoría de gasto: %o', err);
+      if (err instanceof Error) {
+        return res.status(500).json({ message: err.message });
+      } else {
+        return res.status(500).json({ message: 'An unknown error occurred' });
+      }
+    }
+  };

@@ -19,12 +19,19 @@ export const createSueldo = async (req: Request, res: Response): Promise<Respons
     return res.status(400).json({ message: 'Invalid input', errors: validationResult.errors });
   }
 
-  const { Fecha, Tipo, Monto, DescripcionTransaccion, Tipo_Sueldo, Descripcion, ID_Persona } = validationResult.data;
+  const { Fecha, Tipo, Monto, DescripcionTransaccion, Tipo_Sueldo, Descripcion } = validationResult.data;
+
+  // Convertir la fecha a un objeto Date
+  const [day, month, year] = Fecha.split('-').map(Number);
+  const fechaConvertida = new Date(year, month - 1, day);
 
   try {
     // Crear la transacción
+    const transaccionRepository = AppDataSource.getRepository(Transaccion);
+    const sueldoRepository = AppDataSource.getRepository(Sueldo);
+
     const nuevaTransaccion = transaccionRepository.create({
-      Fecha,
+      Fecha: fechaConvertida,
       Tipo,
       Monto,
       Descripcion: DescripcionTransaccion
@@ -46,6 +53,7 @@ export const createSueldo = async (req: Request, res: Response): Promise<Respons
     return res.status(500).json({ message: 'Error al crear el sueldo y la transacción' });
   }
 };
+
 // Función para actualizar sueldos
 export const updateSueldo = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.params;
