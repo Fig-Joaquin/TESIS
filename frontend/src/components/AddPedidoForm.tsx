@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import {Pedido} from '../interfaces/index.ts';
 
-export default function AddPedidoForm({ open, onClose, onAdd }) {
+export default function AddPedidoForm({ open, onClose, onAdd }: { open: boolean; onClose: () => void; onAdd: (newPedido: Pedido) => void }) {
   const [ID_Cliente, setID_Cliente] = useState('');
   const [ID_Proveedor, setID_Proveedor] = useState('');
   const [Tipo_Pedido, setTipo_Pedido] = useState('');
@@ -15,12 +16,12 @@ export default function AddPedidoForm({ open, onClose, onAdd }) {
       ID_Cliente: Number(ID_Cliente),
       ID_Proveedor: Number(ID_Proveedor),
       Tipo_Pedido,
-      Fecha_Pedido: new Date(Fecha_Pedido).toISOString().split('T')[0],
-      Fecha_Entrega: new Date(Fecha_Entrega).toISOString().split('T')[0],
+      Fecha_Pedido,
+      Fecha_Entrega,
       Comentarios,
       Estado,
     };
-    console.log('Datos del nuevo pedido:', newPedido); // Depuración: Mostrar los datos que se están enviando
+    console.log('Datos del nuevo pedido:', newPedido);
     onAdd(newPedido);
     onClose();
   };

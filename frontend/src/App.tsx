@@ -1,10 +1,9 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import SignInSide from './components/SignInSide';
-// import Devoluciones from './components/Devoluciones';
-import Dashboard from './components/Dashboard';
+import SignInSide from './pages/SignInSide';
+import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import Pedidos from './components/Pedidos/Pedidos';
-import Layout from './components/Layout/Layout';
+import Pedidos from './pages/Pedidos';
+import Layout from './components/Layout';
 
 function App() {
   return (

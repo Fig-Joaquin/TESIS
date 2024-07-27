@@ -1,8 +1,10 @@
-import axios from '../axiosConfig';
+import { isAxiosError } from 'axios';
+import api from '../axiosConfig';
+import { Pedido } from '../interfaces/index';
 
 const getPedidos = async () => {
   const token = localStorage.getItem('token');
-  const response = await axios.get('/pedidos', {
+  const response = await api.get('/pedidos', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -10,12 +12,12 @@ const getPedidos = async () => {
   return response.data;
 };
 
-const addPedido = async (pedido) => {
+const addPedido = async (pedido: Pedido) => {
   const token = localStorage.getItem('token');
   console.log('Enviando pedido:', JSON.stringify(pedido, null, 2));
   
   try {
-    const response = await axios.post('/crear-pedido', pedido, {
+    const response = await api.post('/crear-pedido', pedido, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -23,18 +25,20 @@ const addPedido = async (pedido) => {
     });
     console.log('Respuesta del servidor:', response.data);
     return response.data;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error al enviar el pedido:', error);
-    if (error.response) {
-      console.error('Respuesta del servidor:', error.response.data);
+    if (isAxiosError(error)) {
+      console.error('Respuesta del servidor:', error.response?.data);
+    } else {
+      console.error('Error inesperado:', error);
     }
     throw error;
   }
 };
 
-const deletePedido = async (id) => {
+const deletePedido = async (id: number) => {
   const token = localStorage.getItem('token');
-  await axios.delete(`/eliminar-pedido/${id}`, {
+  await api.delete(`/eliminar-pedido/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

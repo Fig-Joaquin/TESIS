@@ -5,8 +5,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
-import Header from './Header';
-import SideBar from './SideBar';
+import Header from './Layout/Header';
+import SideBar from './Layout/SideBar';
 
 const defaultTheme = createTheme();
 

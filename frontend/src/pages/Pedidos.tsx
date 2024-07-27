@@ -1,18 +1,20 @@
+import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { getPedidos, addPedido, deletePedido } from '../../services/pedidoService';
-import PedidosSummary from './PedidosSummary';
-import AddPedidoForm from './AddPedidoForm.tsx';
+import { getPedidos, addPedido, deletePedido } from '../services/pedidoService.ts';
+import PedidosSummary from '../components/PedidosSummary';
+import AddPedidoForm from '../components/AddPedidoForm.tsx';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
 import TextField from '@mui/material/TextField';
+import { Pedido } from '../interfaces/index.ts';
 
 export default function Pedidos() {
-  const [rows, setRows] = useState([]);
-  const [filteredRows, setFilteredRows] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [rows, setRows] = useState<Pedido[]>([]);
+  const [filteredRows, setFilteredRows] = useState<Pedido[]>([]);
+  const [searchTerm, setSearchTerm] = useState<Pedido[]>([]);
   const [open, setOpen] = useState(false);
   const [reload, setReload] = useState(false)
 
@@ -31,19 +33,25 @@ export default function Pedidos() {
   }, [reload]);
 
 
-  const handleAddPedido = async (newPedido) => {
+  const handleAddPedido = async (newPedido: Pedido) => {
     try {
       const addedPedido = await addPedido(newPedido);
+      const fullPedido: Pedido = {
+        ID_Pedido: addedPedido.ID_Pedido, // Assuming the addedPedido response contains ID_Pedido
+        ...newPedido
+    };
+      setRows((prevRows) => [...prevRows, fullPedido]);
+      setFilteredRows((prevRows) => [...prevRows, fullPedido]);
       setTimeout(() => setReload(!reload), 100);
     } catch (error) {
       console.error('Error al agregar el pedido:', error);
-      if (error.response) {
+      if (axios.isAxiosError(error) && error.response) {
         console.error('Respuesta del servidor:', error.response.data);
       }
     }
   };
 
-  const handleDeletePedido = async (id) => {
+  const handleDeletePedido = async (id: number) => {
     try {
       await deletePedido(id);
       setRows((prevRows) => prevRows.filter((row) => row.ID_Pedido !== id));
@@ -53,14 +61,11 @@ export default function Pedidos() {
     }
   };
 
-  const handleSearch = (event) => {
-    const searchValue = event.target.value;
-    setSearchTerm(searchValue);
-
-    const filtered = rows.filter((row) =>
-      row.ID_Pedido.toString().includes(searchValue)
+  const handleSearch = () => {
+    rows.filter((row) =>
+      row.toString
     );
-    setFilteredRows(filtered);
+    setSearchTerm(searchTerm);
   };
 
   return (

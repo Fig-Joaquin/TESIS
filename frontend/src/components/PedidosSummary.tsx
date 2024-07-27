@@ -1,27 +1,27 @@
-import React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
+import { Pedido } from '../interfaces/index';
 
-export default function PedidosSummary({ rows, onDelete }) {
+export default function PedidosSummary({ rows, onDelete }: { rows: Pedido[]; onDelete: (id: number) => void }) {
   if (!rows || !Array.isArray(rows)) {
     console.error('Los datos de los pedidos son inválidos:', rows);
     return <div>Error: Datos de los pedidos inválidos</div>;
   }
 
-  const getEstadoColor = (estado) => {
+  const getEstadoColor = (estado: string) => {
     switch (estado) {
       case 'entregado':
-        return '#228B22'; // Verde oscuro
+        return '#228B22';
       case 'pendiente':
-        return '#FFD700'; // Amarillo oscuro
+        return '#FFD700';
       case 'sin entregar':
-        return '#B22222'; // Rojo oscuro
+        return '#B22222';
       default:
-        return '#000000'; // Negro por defecto
+        return '#000000';
     }
   };
 
@@ -49,7 +49,7 @@ export default function PedidosSummary({ rows, onDelete }) {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => onDelete(row.ID_Pedido)}
+                onClick={() => row.ID_Pedido !== undefined && onDelete(row.ID_Pedido)}
               >
                 Eliminar
               </Button>
